@@ -1,0 +1,286 @@
+---
+description: Quản lý hành trình học SwiftUI — ghi session, xem tiến độ, gợi ý bài tiếp theo. Trigger khi user hỏi về tiến độ học, muốn ghi lại buổi học, hoặc hỏi nên học gì tiếp.
+globs:
+  - "report/**/*.md"
+  - "projects/**/*.swift"
+  - "projects/**/*.playground/**"
+alwaysApply: false
+---
+
+# Language Learning Tracker
+
+Skill này giúp quản lý hành trình học một ngôn ngữ/framework mới theo cấu trúc có tổ chức. Ý tưởng cốt lõi: mỗi buổi học được ghi lại thành một file, và những file đó cùng nhau tạo nên một "bộ nhớ" về hành trình học — để AI có thể tổng hợp, nhìn lại, và gợi ý bước tiếp theo.
+
+## Cấu trúc thư mục chuẩn
+
+```
+{Language}/
+├── {language}_learning_roadmap.md   ← Roadmap đầy đủ
+├── README.md                         ← Tổng quan + cấu trúc folder + bảng phases
+├── projects/                         ← Code thực hành theo phase
+│   └── {phase-folder-name}/
+│       └── {ProjectName}/
+└── report/
+    ├── agent/                        ← Context files cho AI (chỉ tạo, không bao giờ sửa)
+    │   └── context_v1_{YYYY-MM-DD}.md
+    └── sessions/                     ← Report từng buổi học
+        ├── session_template.md
+        └── session_{YYYY-MM-DD}_phase{N}_day{N}.md
+```
+
+**Quy tắc bất biến của `report/agent/`**: File context chỉ được TẠO MỚI, không bao giờ chỉnh sửa file đã tồn tại. Khi cần cập nhật, tạo `context_v{n}_{date}.md` mới và đánh dấu `[[CHANGED]]` tại phần thay đổi.
+
+---
+
+## Xác định chế độ hoạt động
+
+Đọc intent của user và hành động theo đúng chế độ. Nếu không rõ, hỏi một câu ngắn trước khi làm.
+
+---
+
+## Chế độ 1 — INIT: Khởi tạo lộ trình học mới
+
+Dùng khi user muốn bắt đầu học một ngôn ngữ/framework mới.
+
+### Thu thập thông tin
+
+Hỏi những thông tin còn thiếu (đừng hỏi những gì user đã nói):
+
+1. **Ngôn ngữ/framework** muốn học
+2. **Background hiện tại** — ngôn ngữ đã biết, kinh nghiệm lập trình, level
+3. **Mục tiêu cụ thể** — build gì, dùng vào việc gì
+4. **Domain ưa thích** cho ví dụ thực hành (fintech, e-commerce, social, productivity...)
+5. **Thời gian** dự kiến mỗi tuần
+
+### Tạo các file sau
+
+**1. `README.md`** — Tổng quan về lộ trình học, cấu trúc folder, bảng phases, quy tắc folder.
+
+**2. `{language}_learning_roadmap.md`** — Roadmap chi tiết, bao gồm:
+- Learner profile & background
+- Learning strategy (thứ tự học, style)
+- **Mental model mapping** từ ngôn ngữ đã biết → ngôn ngữ mới (dạng bảng, đây là phần quan trọng nhất cho người đã có kinh nghiệm)
+- 8–12 phases tùy ngôn ngữ, mỗi phase gồm: tên, topic chính, project thực hành, thời gian ước tính
+- Common mistakes cần tránh khi chuyển từ ngôn ngữ cũ sang ngôn ngữ mới
+
+**3. `report/agent/context_v1_{today}.md`** — Context file đầu tiên, bao gồm:
+- Learner profile
+- Roadmap summary (bảng phases)
+- Folder structure
+- Current progress: "Ngày bắt đầu: {today}, Phase hiện tại: Phase 1, Chưa bắt đầu"
+- Key mental model mappings
+- Instruction cho AI agent (cách giải thích, domain examples, convention...)
+
+**4. `report/sessions/session_template.md`** — Template cho session reports.
+
+Sau khi tạo xong, xác nhận với user và chỉ ra bước tiếp theo: mở roadmap và bắt đầu Phase 1 Day 1.
+
+---
+
+## Chế độ 2 — SESSION: Ghi lại buổi học vừa xong
+
+Dùng khi user vừa học xong và muốn ghi lại.
+
+### Đọc context trước
+
+Trước khi làm gì, đọc file context mới nhất trong `report/agent/` (file có số version cao nhất) để biết user đang ở phase nào, ngày mấy, và convention.
+
+### Hiểu những gì user học
+
+User mô tả tự do — đừng bắt họ điền form. Từ mô tả đó, tự suy ra:
+- Phase và ngày học (nếu không rõ, hỏi ngắn gọn)
+- Thời lượng
+- Concepts/topics chính đã học
+- Code patterns quan trọng
+- Điểm đã hiểu rõ vs điểm còn mơ hồ
+- Exercises/project đã làm
+
+Nếu thiếu thông tin quan trọng, hỏi thêm — nhưng đừng hỏi quá 2 lần.
+
+### Tạo session report
+
+File: `report/sessions/session_{YYYY-MM-DD}_phase{N}_day{N}.md`
+
+Phần "Next session" phải cụ thể — dựa trên roadmap để biết topic tiếp theo là gì.
+
+### Cập nhật context nếu cần
+
+Nếu progress thay đổi đáng kể (sang phase mới, hoặc tích lũy nhiều session mới), tạo file `context_v{n+1}_{today}.md` mới:
+- Copy nội dung context cũ
+- Cập nhật phần "Current Progress"
+- Đánh dấu `[[CHANGED]]` tại phần thay đổi
+
+Sau khi xong, tóm tắt buổi học trong 2–3 câu và gợi ý ngắn về bài tiếp theo.
+
+---
+
+## Chế độ 3 — SUMMARY: Tổng hợp kiến thức đã học
+
+Dùng khi user muốn nhìn lại tổng thể hành trình học.
+
+### Quy trình đọc
+
+1. Đọc context file mới nhất trong `report/agent/`
+2. Liệt kê tất cả file trong `report/sessions/` (bỏ qua `session_template.md`), sắp xếp theo ngày
+3. Đọc từng session file
+4. Đọc roadmap để biết toàn bộ phases và mapping
+
+### Tổng hợp và trình bày
+
+```
+## Tổng quan hành trình học [Language]
+- Ngày bắt đầu → Hôm nay: X tuần, Y buổi học (~Z giờ tổng cộng)
+- Tiến độ: Phase N/M — [Tên phase] (~X% roadmap)
+
+## Kiến thức đã nắm (theo phase)
+[Liệt kê theo từng phase đã qua, bullet points ngắn gọn, focus vào concepts quan trọng]
+
+## Điểm mạnh nhận thấy
+[Những area user học nhanh, code tốt, hiểu sâu — dựa trên pattern từ session reports]
+
+## Điểm cần củng cố
+[Tổng hợp các điểm "còn mơ hồ / chưa chắc" từ các session — đây là thứ quan trọng nhất để ôn lại]
+
+## Knowledge gaps tiềm ẩn
+[Những topic trong roadmap của phase đã qua nhưng ít/chưa được nhắc đến trong sessions]
+
+## Next milestone
+[Phase hoặc topic tiếp theo, và lý do tại sao đây là bước tiếp tốt nhất]
+```
+
+---
+
+## Chế độ 4 — NEXT: Gợi ý bài học tiếp theo
+
+Dùng khi user muốn biết nên học gì tiếp.
+
+### Quy trình
+
+1. Đọc context file mới nhất
+2. Đọc session report gần nhất
+3. Đọc phần roadmap liên quan đến phase hiện tại và tiếp theo
+
+### Trả lời
+
+Trả lời theo cấu trúc sau — ngắn gọn và thực hành:
+
+```
+**Bạn đang ở:** Phase N — [Tên phase], Day X
+
+**Bài học tiếp theo: [Tên topic]**
+Lý do: [1 câu — tại sao học topic này bây giờ là hợp lý]
+
+**Cần ôn lại trước:** [Nếu có điểm mơ hồ từ buổi trước, nhắc ngắn gọn — bỏ qua nếu không có]
+
+**Learning objectives:**
+- [Objective 1]
+- [Objective 2]
+- [Objective 3]
+
+**Tạo project — từng bước:**
+[Liệt kê các bước cụ thể theo toolchain. Xem hướng dẫn bên dưới]
+
+**Exercise:**
+[Yêu cầu bài tập cụ thể — input/output rõ ràng, không cần full solution]
+
+**Ước tính:** ~X giờ
+```
+
+### Hướng dẫn viết "Tạo project — từng bước"
+
+**Nguyên tắc bắt buộc:**
+- Phải cụ thể đủ để user làm ngay không cần Google thêm
+- Luôn dùng đường dẫn đầy đủ từ root working directory — không viết chung chung "trong thư mục projects"
+- Nếu có cạm bẫy phổ biến (IDE tự bật setting ngoài ý muốn, version mặc định sai...), nhắc ngay tại bước đó
+- Kết thúc bằng: "Sau khi tạo xong, mở `[tên file chính]` và bắt đầu với `[điểm xuất phát cụ thể]`"
+
+**Xcode Playground (Swift — bài học ngắn, không cần UI):**
+```
+1. Mở Xcode
+2. File → New → Playground... (⌘⇧N → chọn "Playground" nếu cần)
+3. Chọn platform: macOS (dùng iOS chỉ khi bài cần UIKit/SwiftUI views)
+4. Đặt tên: [TênBài] — ví dụ: Day3-Collections
+5. Save location: [đường dẫn đầy đủ]/projects/[weekN-xxx]/
+   (không save vào Desktop — Xcode hay đề xuất vậy)
+6. Click Create → xoá code mẫu `//: A Swift Tour`
+7. Sau khi tạo xong, mở `Contents.swift` và bắt đầu với `import Foundation`
+```
+
+**Xcode App Project (Swift/SwiftUI — bài cần simulator/views):**
+```
+1. Mở Xcode
+2. File → New → Project... (⌘⇧N)
+3. Chọn template: iOS → App → Next
+4. Điền:
+   - Product Name: [TênProject]
+   - Team: None (học thì không cần signing)
+   - Interface: SwiftUI
+   - Language: Swift
+   - Bỏ chọn: Include Tests (trừ khi bài có yêu cầu test)
+5. Save location: [đường dẫn đầy đủ]/projects/[weekN-xxx]/
+6. Bỏ chọn "Create Git repository on my Mac" nếu đang dùng repo chung
+7. Click Create → mở `ContentView.swift` để bắt đầu
+```
+
+**Python:**
+```
+1. Tạo thư mục và file:
+   mkdir -p [đường dẫn đầy đủ]/projects/[phaseN-xxx]/[TênProject]
+   touch [đường dẫn đầy đủ]/projects/[phaseN-xxx]/[TênProject]/main.py
+2. Mở trong editor:
+   code [đường dẫn đầy đủ]/projects/[phaseN-xxx]/[TênProject]/
+3. Bắt đầu viết trong `main.py`
+```
+
+**Node.js / TypeScript:**
+```
+1. cd [đường dẫn đầy đủ]/projects/[phaseN-xxx]/
+2. mkdir [TênProject] && cd [TênProject]
+3. npm init -y
+4. npm install -D typescript ts-node @types/node   # nếu dùng TypeScript
+5. Tạo file chính: touch index.ts
+6. Mở: code .
+```
+
+**Kotlin (file đơn, không cần Android Studio):**
+```
+1. Tạo file:
+   mkdir -p [đường dẫn đầy đủ]/projects/[phaseN-xxx]/[TênProject]
+   touch [đường dẫn đầy đủ]/projects/[phaseN-xxx]/[TênProject]/Main.kt
+2. Mở trong editor: code .
+3. Chạy: kotlinc Main.kt -include-runtime -d main.jar && java -jar main.jar
+```
+
+**Kotlin Android App (Android Studio):**
+```
+1. Mở Android Studio
+2. File → New → New Project
+3. Chọn template: Empty Activity (Compose) → Next
+4. Điền:
+   - Name: [TênProject]
+   - Package name: com.study.[tenproject]
+   - Save location: [đường dẫn đầy đủ]/projects/[weekN-xxx]/[TênProject]
+   - Language: Kotlin
+   - Minimum SDK: API 26
+5. Click Finish → đợi Gradle sync (~1-2 phút lần đầu)
+6. Mở `MainActivity.kt` để bắt đầu
+```
+
+**React Native / Expo:**
+```
+1. cd [đường dẫn đầy đủ]/projects/[weekN-xxx]/
+2. npx create-expo-app [TênProject] --template blank-typescript
+3. cd [TênProject]
+4. npx expo start
+5. Mở `App.tsx` để bắt đầu
+```
+
+---
+
+## Tips quan trọng khi viết roadmap mới (Chế độ INIT)
+
+- **Mental model mapping là quan trọng nhất** với người đã có kinh nghiệm. Đây không phải bảng trang trí — đây là cầu nối giúp user học nhanh gấp đôi vì não họ đã có khung tư duy sẵn.
+- **Mỗi phase có một project thực hành** liên quan đến domain user ưa thích — học qua làm, không chỉ đọc lý thuyết.
+- **8–12 phases riêng biệt, mỗi phase 1 topic**: ví dụ: "Phase 1 — Variables & Functions", "Phase 2 — Optionals", "Phase 3 — Collections & Closures"... Không gộp 3-4 topics vào 1 phase.
+- **Progression tuyến tính**: Phase sau build trên phase trước. Tránh giới thiệu dependencies ngược.
+- **Không over-explain nền tảng lập trình** nếu user đã là senior dev — chỉ giải thích những gì khác biệt so với ngôn ngữ họ đã biết.
