@@ -13,15 +13,17 @@ struct HeaderView: View {
     var body: some View {
         HStack {
             Text("Chào \(name.uppercased())")
-                .padding(.vertical, 8)
-                .background(.yellow)
-                .font(.headline)
-                .foregroundStyle(.linearGradient(colors: [.blue, .purple], startPoint: .leading, endPoint: .trailing))
+                .padding(.vertical, AppSpacing.sm)
+                .background(AppColor.bgPrimary)
+                .font(AppTypography.title)
+                .foregroundStyle(.linearGradient(colors: [AppColor.brandPrimary, AppColor.brandSecondary], startPoint: .leading, endPoint: .trailing))
                 .multilineTextAlignment(.center)
             Spacer()
-            Image(systemName: "bell.fill").font(.title3).foregroundStyle(.secondary)
+            Image(systemName: "bell.fill")
+                .font(AppTypography.title)
+                .foregroundStyle(AppColor.textSecondary)
         }
-        .padding(.vertical,8)
+        .padding(.vertical, AppSpacing.sm)
     }
 }
 

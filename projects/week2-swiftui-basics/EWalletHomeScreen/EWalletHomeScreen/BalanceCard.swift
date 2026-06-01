@@ -12,37 +12,59 @@ struct BalanceCard: View {
     
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: AppSpacing.sm) {
                 HStack {
-                    Text("Số dư hiện tại:").font(.title2).fontWeight(.semibold).foregroundStyle(.white)
+                    Text("Số dư hiện tại:")
+                        .font(AppTypography.title)
+                        .foregroundStyle(.white)
                     Spacer()
                     Text("VIB Wallet")
+                        .foregroundStyle(AppColor.textPrimaryWhite)
                         .font(.caption)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 4)
-                        .background(.blue.opacity(0.15))
+                        .padding(.horizontal, AppSpacing.sm)
+                        .padding(.vertical, AppSpacing.xs)
+                        .background(AppColor.brandPrimary.opacity(0.15))
                         .clipShape(Capsule())
-
+                    
                 }
-                Text (balance.asVND()).font(.title2).bold().foregroundStyle(.white)
+                Text (balance.asVND())
+                    .font(AppTypography.title)
+                    .foregroundStyle(.white)
             }
-            .padding(16)
+            .padding(AppSpacing.lg)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background {
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(.linearGradient(
-                        .init(colors: [Color.blue, .blue.opacity(0.3), .blue.opacity(0.05)]), startPoint: .topLeading, endPoint: .bottomTrailing))
+                RoundedRectangle(cornerRadius: AppRadius.card, style: .continuous)
+                    .fill(
+                        .linearGradient(
+                            .init(
+                                colors:
+                                    [
+                                    AppColor.brandPrimary,
+                                    AppColor.brandPrimary.opacity(0.3),
+                                    AppColor.brandPrimary.opacity(0.2)
+                                ]
+                            ),
+                            startPoint: .topLeading, endPoint: .bottomTrailing
+                        )
+                    )
             }
-            Image(systemName: "wallet.pass.fill")
-                .font(.title2)
-                .foregroundStyle(.blue.opacity(0.3))
-                .padding(.bottom, 16)
-                .padding(.trailing, 16)
+            Image(systemName: "creditcard.fill")
+                .font(AppTypography.title)
+                .foregroundStyle(AppColor.textPrimaryWhite)
+                .padding(.bottom, AppSpacing.lg)
+                .padding(.trailing, AppSpacing.lg)
         }
+        .appShadow(AppShadow.card)
     }
 }
 
 #Preview("Balance Card") {
     BalanceCard(balance: 15_000_000)
         .padding()
+}
+
+#Preview("Balance Card Dark") {
+    BalanceCard(balance: 15_000_000)
+        .padding().preferredColorScheme(.dark)
 }

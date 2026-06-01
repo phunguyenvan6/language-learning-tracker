@@ -14,8 +14,14 @@ struct TransactionRowView: View {
         VStack(alignment: .leading) {
             Text("\(transaction.displayNote) - \(transaction.displayAmount)")
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .font(.headline)
-                .foregroundStyle(.linearGradient(colors: [.blue, .purple], startPoint: .leading, endPoint: .trailing))
+                .font(AppTypography.body)
+                .foregroundStyle(
+                    .linearGradient(
+                        colors: [
+                            AppColor.brandPrimary, AppColor.brandSecondary
+                        ], startPoint: .leading, endPoint: .trailing
+                    )
+                )
         }
     }
 }

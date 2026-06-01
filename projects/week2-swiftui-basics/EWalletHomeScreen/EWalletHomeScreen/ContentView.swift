@@ -8,30 +8,89 @@
 import SwiftUI
 
 struct ContentView: View {
-    private let sampleTransaction = Transaction(id: UUID().uuidString, amount: 1500000, note: "Đi chợ", category: .shopping, createAt: Date())
+    var shouldSeedOnAppear: Bool = true
     
+    @State private var manager = TransactionManager()
+    @State private var listRevision = 0
+
     var body: some View {
-        VStack(alignment: .leading) {
-            HeaderView(name: "Phú")
-            BalanceCard(balance: 15000000.0)
-            VStack(alignment: .leading) {
-                Text("Giao dịch gần đây:")
-                    .padding(.top, 16)
-                    .padding(.bottom, 4)
-                    .font(.headline)
-                TransactionRowView(transaction: sampleTransaction)
+        ScrollView {
+            VStack(alignment: .leading, spacing: AppSpacing.md)
+            {
+                HeaderView(name: "Phú")
+                BalanceCard(balance: manager.totalAmount())
+                QuickActionsRow()
+                PromotionBannerView(
+                    title: "Hoàn tiền đến 5%", description: "Thanh toán hoá đơn qua VIB Wallet", ctaTitle: "Xem ngay"
+                )
+                LazyVStack(alignment: .leading, spacing: AppSpacing.sm, pinnedViews: [.sectionHeaders]) {
+                    Section {
+                        if sortedTransactions.isEmpty {
+                            EmptyTransactionsView {
+                                print("refresh tapped")
+                            }
+                        } else {
+                            ForEach(sortedTransactions) { tx in
+                                TransactionRowView(transaction: tx)
+                            }
+                        }
+                    } header: {
+                        Text("Giao dịch gần đây:")
+                            .padding(.top, AppSpacing.lg)
+                            .padding(.bottom, AppSpacing.xs)
+                            .font(AppTypography.headline)
+                    }
+                }
+                .id(listRevision)
+            }
+            .frame(maxWidth: .infinity, alignment: .topLeading)
+            .padding(.horizontal, AppSpacing.lg)
+            .padding(.top, AppSpacing.sm)
+        }
+        .background(AppColor.bgPrimary.ignoresSafeArea())
+        .scrollIndicators(.hidden)
+        .onAppear {
+            guard shouldSeedOnAppear, manager.transactions.isEmpty else { return }
+            seedSampleTransactions()
+            listRevision += 1
+        }
+    }
+    
+    private func seedSampleTransactions() {
+        let samples: [(Double, String?, TransactionCategory)] = [
+            (850_000, "Đi chợ", .food),
+            (2_500_000, "Chuyển tiền", .transport),
+            (120_000, nil, .bill),
+            (450_000, "Mua sắm", .shopping),
+        ]
+        for sample in samples {
+            do {
+                try manager.add(
+                    amount: sample.0,
+                    note: sample.1,
+                    category: sample.2
+                )
+            } catch let error as LocalizedError {
+                print(error.errorDescription ?? String(describing: error))
+            } catch {
+                print(error)
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .padding(.horizontal, 16)
-        .padding(.top, 8)
+    }
+    
+    private var sortedTransactions: [Transaction] {
+        manager.sortByNewest()
     }
 }
 
-#Preview("Có số dư") {
+#Preview("Có giao dịch") {
     ContentView()
 }
 
 #Preview("Dark") {
     ContentView().preferredColorScheme(.dark)
+}
+
+#Preview("Empty") {
+    ContentView(shouldSeedOnAppear: false)
 }
