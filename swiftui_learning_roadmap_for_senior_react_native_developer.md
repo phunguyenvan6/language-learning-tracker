@@ -1,63 +1,58 @@
-# SwiftUI Learning Roadmap for a Senior React Native Developer
+# Full SwiftUI Learning Roadmap for Senior React Native Developer
 
-> Purpose: This file is designed to be imported into Claude Code or another AI coding agent as a learning/context document.
+> File này dùng để import vào Claude Code / Agent AI khác làm context học SwiftUI.
 >
-> Learner profile: Senior React Native Developer transitioning to SwiftUI.
+> Người học: Senior React Native Developer muốn chuyển sang SwiftUI.
 >
-> Goal: Learn Swift + SwiftUI through practical mapping from React Native / TypeScript concepts, then build production-like SwiftUI apps.
+> Cách học: mapping React Native / TypeScript sang Swift / SwiftUI, thực chiến, production-oriented.
 
 ---
 
-## 1. Learner Background
+## 0. Learner Context
 
-The learner is already experienced with:
+Người học đã có kinh nghiệm với:
 
 - React Native
 - TypeScript / JavaScript
 - Component-based UI
-- Props and state
+- Props / State
 - Hooks
 - React Navigation
 - Async API calls
-- State management such as Redux, Zustand, MobX, or similar
+- Redux / Zustand / MobX hoặc pattern tương tự
 - Mobile app architecture
-- Design system thinking
-- Production-level app development
+- Design system
+- Production-level mobile development
 
-The learner should not be treated as a beginner programmer.
-
-When explaining Swift or SwiftUI, always include mappings from React Native / TypeScript where useful.
+Không cần giải thích programming từ đầu. Khi dạy Swift/SwiftUI, hãy luôn mapping sang React Native/TypeScript nếu phù hợp.
 
 ---
 
-## 2. Learning Strategy
+## 1. Core Goal
 
-The learner should learn in this order:
+Mục tiêu không chỉ là học syntax SwiftUI.
 
-1. Swift foundation
-2. SwiftUI view and layout
-3. SwiftUI state and data flow
-4. Navigation
-5. Architecture
-6. Networking
-7. Persistence
-8. Design system
-9. Testing
-10. Performance and production readiness
+Mục tiêu là có thể build app SwiftUI production bằng cách chuyển mental model từ React Native sang native Apple platform.
 
-The learning style should be:
-
-- Practical
-- Mapping-based
-- Production-oriented
-- Code-heavy
-- Focused on real mobile app concepts
-
-Avoid over-explaining general programming basics.
+```text
+React Native mental model
+        ↓
+Swift language foundation
+        ↓
+SwiftUI declarative UI
+        ↓
+SwiftUI data flow
+        ↓
+Navigation and architecture
+        ↓
+Networking and persistence
+        ↓
+Design system and production readiness
+```
 
 ---
 
-## 3. Core Mental Model Mapping
+## 2. Global Mapping: React Native ↔ SwiftUI
 
 | React Native / TypeScript | Swift / SwiftUI |
 |---|---|
@@ -65,6 +60,8 @@ Avoid over-explaining general programming basics.
 | Function component | `struct SomeView: View` |
 | JSX | `var body: some View` |
 | Props | Stored properties, usually `let` |
+| Optional prop | Optional property, e.g. `String?` |
+| Children | `@ViewBuilder content` |
 | State | `@State` |
 | Controlled prop | `@Binding` |
 | Context | `@Environment` / `@EnvironmentObject` |
@@ -74,14 +71,17 @@ Avoid over-explaining general programming basics.
 | `useEffect` with dependency | `.onChange(of:)` |
 | React Navigation | `NavigationStack` |
 | `navigation.navigate()` | `path.append(route)` / `NavigationLink` |
+| Route params | Enum associated value / model property |
 | Modal | `sheet` / `fullScreenCover` |
 | FlatList | `List` / `ScrollView + LazyVStack` |
+| ScrollView | `ScrollView` |
 | StyleSheet | View modifiers / custom `ViewModifier` |
 | TouchableOpacity | `Button` / `.onTapGesture` |
 | Animated / Reanimated | `withAnimation`, transitions, gestures |
 | AsyncStorage | `UserDefaults`, file storage, SwiftData |
 | Fetch / Axios | `URLSession` |
 | TypeScript interface | Swift `protocol` or `struct` |
+| TypeScript type model | Swift `struct` |
 | Generic `<T>` | Generic `<T>` |
 | Jest | XCTest / Swift Testing |
 | Detox | XCUITest |
@@ -89,11 +89,39 @@ Avoid over-explaining general programming basics.
 
 ---
 
-# 4. Full Roadmap Overview
+## 3. Recommended Timeline
 
-## Phase 1: Swift Foundation
+### Fast Track: 6 weeks
 
-Goal: Be able to read and write basic Swift code needed for SwiftUI.
+| Week | Focus |
+|---|---|
+| Week 1 | Swift foundation |
+| Week 2 | SwiftUI view, layout, and styling |
+| Week 3 | State, binding, forms, and data flow |
+| Week 4 | Navigation and architecture |
+| Week 5 | Networking, async/await, persistence |
+| Week 6 | Design system, testing, production readiness |
+
+### Deeper Track: 8 weeks
+
+| Week | Focus |
+|---|---|
+| Week 1 | Swift foundation |
+| Week 2 | SwiftUI basics |
+| Week 3 | Layout and component composition |
+| Week 4 | State management and Observation |
+| Week 5 | Navigation and architecture |
+| Week 6 | Networking and persistence |
+| Week 7 | Design system, animation, accessibility |
+| Week 8 | Testing, performance, production readiness |
+
+---
+
+# 4. Phase Overview
+
+## Phase 1 — Swift Foundation
+
+Goal: đọc và viết được Swift code cơ bản để chuẩn bị học SwiftUI.
 
 Topics:
 
@@ -120,9 +148,9 @@ Main project:
 
 ---
 
-## Phase 2: SwiftUI Basics
+## Phase 2 — SwiftUI Basics
 
-Goal: Understand SwiftUI declarative UI.
+Goal: hiểu declarative UI trong SwiftUI.
 
 Topics:
 
@@ -132,16 +160,19 @@ Topics:
 - `Image`
 - `Button`
 - `TextField`
+- `Toggle`
+- `Picker`
 - `VStack`
 - `HStack`
 - `ZStack`
 - `Spacer`
+- `Group`
 - `ScrollView`
 - `List`
-- View modifiers
-- Preview
-- Conditional rendering
 - `ForEach`
+- Preview
+- View modifiers
+- Conditional rendering
 
 Main project:
 
@@ -149,9 +180,9 @@ Main project:
 
 ---
 
-## Phase 3: SwiftUI State and Data Flow
+## Phase 3 — SwiftUI State and Data Flow
 
-Goal: Understand how data moves in SwiftUI.
+Goal: hiểu data flow trong SwiftUI.
 
 Topics:
 
@@ -160,10 +191,10 @@ Topics:
 - `@Observable`
 - `@Environment`
 - `@EnvironmentObject`
-- Callback closures
 - Parent-child data flow
-- Form input
-- Controlled component equivalent
+- Callback closure
+- Form state
+- Validation state
 - `.task`
 - `.onAppear`
 - `.onChange`
@@ -174,9 +205,9 @@ Main project:
 
 ---
 
-## Phase 4: Navigation and App Structure
+## Phase 4 — Navigation and App Structure
 
-Goal: Build multi-screen apps.
+Goal: build app nhiều màn hình.
 
 Topics:
 
@@ -187,8 +218,8 @@ Topics:
 - Route parameters
 - `sheet`
 - `fullScreenCover`
-- Feature-based folder structure
 - App-level router
+- Feature-based folder structure
 
 Main project:
 
@@ -196,9 +227,9 @@ Main project:
 
 ---
 
-## Phase 5: Architecture
+## Phase 5 — Architecture
 
-Goal: Build app structure suitable for production.
+Goal: cấu trúc app theo hướng production.
 
 Topics:
 
@@ -214,19 +245,19 @@ Topics:
 
 Main project:
 
-- Refactor Transaction app into features, stores, services, and shared components
+- Refactor Transaction app into features, stores, services, shared components
 
 ---
 
-## Phase 6: Networking
+## Phase 6 — Networking
 
-Goal: Call real or mock APIs using Swift concurrency.
+Goal: gọi API thật hoặc mock bằng Swift concurrency.
 
 Topics:
 
 - `URLSession`
 - `Codable`
-- async/await
+- `async/await`
 - `throws`
 - `do/try/catch`
 - Request / response models
@@ -237,13 +268,13 @@ Topics:
 
 Main project:
 
-- GitHub Repo Search or Movie Search app
+- GitHub Repo Search app hoặc Movie Search app
 
 ---
 
-## Phase 7: Persistence
+## Phase 7 — Persistence
 
-Goal: Store local data.
+Goal: lưu data local.
 
 Topics:
 
@@ -262,9 +293,9 @@ Main project:
 
 ---
 
-## Phase 8: Design System and Advanced UI
+## Phase 8 — Design System and Advanced UI
 
-Goal: Build reusable UI components.
+Goal: build reusable UI components.
 
 Topics:
 
@@ -288,9 +319,9 @@ Main project:
 
 ---
 
-## Phase 9: Testing
+## Phase 9 — Testing
 
-Goal: Test business logic and app behavior.
+Goal: test business logic và app behavior.
 
 Topics:
 
@@ -308,9 +339,9 @@ Main project:
 
 ---
 
-## Phase 10: Production Readiness
+## Phase 10 — Production Readiness
 
-Goal: Prepare apps for real-world usage.
+Goal: chuẩn bị app cho production.
 
 Topics:
 
@@ -330,11 +361,11 @@ Main project:
 
 ---
 
-# 5. Week 1: Swift Foundation
+# 5. Week 1 — Swift Foundation
 
-## Week 1 Goal
+## Goal
 
-After week 1, the learner should understand:
+Sau tuần 1, người học cần hiểu:
 
 - Swift syntax
 - Swift data types
@@ -347,9 +378,9 @@ After week 1, the learner should understand:
 - Extensions
 - Generics
 - Basic async/await
-- How these map to React Native / TypeScript concepts
+- Mapping với React Native / TypeScript
 
-By the end of the week, the learner should build a pure Swift mini module:
+Cuối tuần, build được pure Swift mini module:
 
 - `TransactionCategory`
 - `Transaction`
@@ -362,7 +393,7 @@ By the end of the week, the learner should build a pure Swift mini module:
 
 ---
 
-## Day 1: Variables, Functions, Structs, Classes
+## Day 1 — Variables, Functions, Structs, Classes
 
 ### Concepts
 
@@ -434,7 +465,7 @@ Model = usually struct
 Store/ViewModel/Service = usually class
 ```
 
-### Day 1 Exercise
+### Exercise
 
 Create:
 
@@ -465,7 +496,7 @@ print(formatAmount(transaction.amount))
 
 ---
 
-## Day 2: Optionals
+## Day 2 — Optionals
 
 ### Concepts
 
@@ -515,13 +546,7 @@ func printNote(_ note: String?) {
 let displayNote = note ?? "No note"
 ```
 
-### Key Notes
-
-Swift forces null-safety at compile time.
-
-You cannot use an Optional as a normal value until it is unwrapped.
-
-### Day 2 Exercise
+### Exercise
 
 Update:
 
@@ -541,11 +566,9 @@ func displayNote(_ note: String?) -> String {
 }
 ```
 
-Test with both non-nil and nil notes.
-
 ---
 
-## Day 3: Arrays, Dictionaries, Enums
+## Day 3 — Arrays, Dictionaries, Enums
 
 ### Concepts
 
@@ -569,19 +592,14 @@ Test with both non-nil and nil notes.
 | `array.map(item => item.x)` | `array.map { $0.x }` |
 | `array.filter(...)` | `array.filter { ... }` |
 | Union string literal | `enum` |
-| `type Category = "food" \| "shopping"` | `enum Category { case food, shopping }` |
+| `type Category = "food" | "shopping"` | `enum Category { case food, shopping }` |
 
 ### Swift Examples
 
 ```swift
 let numbers: [Int] = [1, 2, 3]
-```
-
-```swift
 var transactions: [Transaction] = []
-```
 
-```swift
 let amounts = transactions.map { $0.amount }
 let largeTransactions = transactions.filter { $0.amount > 100000 }
 let sorted = transactions.sorted { $0.amount > $1.amount }
@@ -604,9 +622,7 @@ extension TransactionCategory {
 }
 ```
 
-### Day 3 Exercise
-
-Create:
+### Exercise
 
 ```swift
 enum TransactionCategory: Equatable {
@@ -615,22 +631,14 @@ enum TransactionCategory: Equatable {
     case transfer
     case bill
 }
-```
 
-Update model:
-
-```swift
 struct Transaction {
     let id: String
     let amount: Double
     let note: String?
     let category: TransactionCategory
 }
-```
 
-Create:
-
-```swift
 func filterTransactions(
     _ transactions: [Transaction],
     by category: TransactionCategory
@@ -641,7 +649,7 @@ func filterTransactions(
 
 ---
 
-## Day 4: Closures
+## Day 4 — Closures
 
 ### Concepts
 
@@ -685,18 +693,10 @@ handleAmount { amount in
 ```
 
 ```swift
-let result = transactions.filter { transaction in
-    transaction.amount > 100000
-}
-```
-
-```swift
 let result = transactions.filter { $0.amount > 100000 }
 ```
 
-### Day 4 Exercise
-
-Create:
+### Exercise
 
 ```swift
 func performTransaction(
@@ -712,23 +712,9 @@ func performTransaction(
 }
 ```
 
-Call:
-
-```swift
-performTransaction(
-    amount: 100000,
-    onSuccess: { message in
-        print(message)
-    },
-    onFailure: { error in
-        print(error)
-    }
-)
-```
-
 ---
 
-## Day 5: Protocols, Extensions, Generics
+## Day 5 — Protocols, Extensions, Generics
 
 ### Concepts
 
@@ -778,36 +764,9 @@ struct ApiResponse<T> {
 }
 ```
 
-### Day 5 Exercise
-
-Create:
-
-```swift
-protocol TransactionRepository {
-    func getTransactions() -> [Transaction]
-}
-```
-
-Create:
-
-```swift
-final class MockTransactionRepository: TransactionRepository {
-    func getTransactions() -> [Transaction] {
-        return [
-            Transaction(
-                id: "1",
-                amount: 50000,
-                note: "Coffee",
-                category: .food
-            )
-        ]
-    }
-}
-```
-
 ---
 
-## Day 6: Async/Await and Error Handling
+## Day 6 — Async/Await and Error Handling
 
 ### Concepts
 
@@ -836,9 +795,7 @@ final class MockTransactionRepository: TransactionRepository {
 enum TransactionError: Error {
     case invalidAmount
 }
-```
 
-```swift
 func validateAmount(_ amount: Double) throws {
     if amount <= 0 {
         throw TransactionError.invalidAmount
@@ -847,20 +804,10 @@ func validateAmount(_ amount: Double) throws {
 ```
 
 ```swift
-do {
-    try validateAmount(0)
-} catch {
-    print(error)
-}
-```
-
-```swift
 protocol TransactionService {
     func fetchTransactions() async throws -> [Transaction]
 }
-```
 
-```swift
 final class MockTransactionService: TransactionService {
     func fetchTransactions() async throws -> [Transaction] {
         return [
@@ -875,26 +822,9 @@ final class MockTransactionService: TransactionService {
 }
 ```
 
-```swift
-let service = MockTransactionService()
-
-Task {
-    do {
-        let transactions = try await service.fetchTransactions()
-        print(transactions)
-    } catch {
-        print(error)
-    }
-}
-```
-
 ---
 
-## Day 7: Mini Project — Transaction Manager
-
-### Goal
-
-Build a pure Swift module that can later be connected to SwiftUI.
+## Day 7 — Mini Project: Transaction Manager
 
 ### Requirements
 
@@ -984,158 +914,792 @@ extension Transaction {
 }
 ```
 
-### Test Code
+---
 
-```swift
-let manager = TransactionManager()
+# 6. Week 2 — SwiftUI Views and Layout
 
-let tx1 = Transaction(
-    id: "1",
-    amount: 50000,
-    note: "Coffee",
-    category: .food,
-    createdAt: Date()
-)
+## Goal
 
-let tx2 = Transaction(
-    id: "2",
-    amount: 120000,
-    note: "Lunch",
-    category: .food,
-    createdAt: Date()
-)
+Hiểu SwiftUI declarative UI và layout.
 
-manager.add(tx1)
-manager.add(tx2)
-
-print(manager.transactions)
-print(manager.filter(by: .food))
-print(manager.totalAmount().asVND())
-```
+Build static screens trước khi thêm state phức tạp.
 
 ---
 
-# 6. Week 1 Checklist
+## Concepts
 
-The learner should be able to answer:
-
-1. What is the difference between `let` and `var`?
-2. What is the difference between `struct` and `class`?
-3. When should a Swift data model be a `struct`?
-4. When should a Swift service/store be a `class`?
-5. What is an Optional?
-6. What is the difference between `if let` and `guard let`?
-7. What is a closure?
-8. How does a Swift closure map to a React Native callback?
-9. What is a protocol?
-10. How does a protocol map to a TypeScript interface?
-11. What is an extension?
-12. What does `async throws` mean?
-13. How do `map`, `filter`, `sorted`, and `reduce` work in Swift?
-14. Why is `Dictionary` access optional in Swift?
-15. Why is enum modeling useful for SwiftUI?
-
----
-
-# 7. Guidance for the AI Agent
-
-When helping the learner:
-
-- Assume the learner understands advanced React Native concepts.
-- Explain Swift through React Native / TypeScript mappings.
-- Do not spend too much time explaining universal programming concepts.
-- Focus on syntax differences and mental model differences.
-- Prefer practical examples.
-- Prefer mobile app examples.
-- Use e-wallet, transaction, payment, profile, and list/form flows as examples.
-- Point out when the learner is translating React Native patterns too directly into SwiftUI.
-- Encourage Swift conventions instead of JavaScript-style code.
-- Keep code production-oriented.
-
----
-
-# 8. Common Translation Mistakes to Watch For
-
-## Mistake 1: Treating SwiftUI `body` like a place for side effects
-
-Wrong:
-
-```swift
-var body: some View {
-    fetchData()
-    return Text("Hello")
-}
-```
-
-Better:
-
-```swift
-var body: some View {
-    Text("Hello")
-        .task {
-            await store.load()
-        }
-}
-```
-
-## Mistake 2: Trying to force Flexbox into SwiftUI
-
-React Native uses Flexbox heavily.
-
-SwiftUI prefers:
-
+- `struct SomeView: View`
+- `var body: some View`
+- `Text`
+- `Image`
+- `Button`
+- `TextField`
 - `VStack`
 - `HStack`
 - `ZStack`
 - `Spacer`
-- `frame`
-- `overlay`
-- `background`
-- alignment
+- `Group`
+- `ScrollView`
+- `LazyVStack`
+- `List`
+- `ForEach`
+- `.padding`
+- `.background`
+- `.foregroundStyle`
+- `.font`
+- `.frame`
+- `.clipShape`
+- Preview
 
-## Mistake 3: Overusing global stores
+---
 
-In SwiftUI:
+## React Native ↔ SwiftUI Layout Mapping
 
-- Use `@State` for local view state.
-- Use `@Binding` for parent-child controlled state.
-- Use `@Observable` store for feature state.
-- Use `@Environment` for dependencies or global app context.
-
-## Mistake 4: Mapping hooks one-to-one
-
-There is no perfect one-to-one mapping for all hooks.
-
-| React Hook | SwiftUI Equivalent |
+| React Native | SwiftUI |
 |---|---|
-| `useState` | `@State` |
-| `useEffect(() => {}, [])` | `.task` / `.onAppear` |
-| `useEffect(..., [value])` | `.onChange(of:)` |
-| `useMemo` | Computed property / cached state if needed |
-| `useCallback` | Usually unnecessary |
-| Custom hook | Store / service / helper object |
+| `<View />` | `VStack`, `HStack`, `ZStack`, `Group` |
+| `<Text />` | `Text` |
+| `<Image />` | `Image` |
+| `<Button />` | `Button` |
+| `<TextInput />` | `TextField` |
+| `ScrollView` | `ScrollView` |
+| `FlatList` | `List` or `ScrollView + LazyVStack` |
+| `flexDirection: 'row'` | `HStack` |
+| `flexDirection: 'column'` | `VStack` |
+| `position: absolute` | `ZStack`, `.overlay`, `.background` |
+| `padding: 16` | `.padding(16)` |
+| `borderRadius` | `.clipShape(RoundedRectangle(cornerRadius:))` |
+| `backgroundColor` | `.background(...)` |
 
-## Mistake 5: Customizing `List` too deeply
+---
 
-For highly custom feeds, prefer:
+## Key Mental Model
+
+React Native layout is Flexbox-first.
+
+SwiftUI layout is Stack-first.
+
+React Native:
+
+```tsx
+<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+  <Icon />
+  <Text>Payment</Text>
+</View>
+```
+
+SwiftUI:
 
 ```swift
-ScrollView {
-    LazyVStack {
-        ForEach(items) { item in
-            TransactionRow(item: item)
+HStack(alignment: .center, spacing: 8) {
+    Image(systemName: "creditcard")
+    Text("Payment")
+}
+```
+
+---
+
+## Modifier Order Matters
+
+These are different:
+
+```swift
+Text("Hello")
+    .padding()
+    .background(.blue)
+```
+
+```swift
+Text("Hello")
+    .background(.blue)
+    .padding()
+```
+
+The first applies background after padding. The second applies padding after background.
+
+---
+
+## Exercises
+
+### Exercise 1: Balance Card
+
+Create:
+
+- balance title
+- amount
+- subtitle
+- rounded card
+- padding
+- background
+
+### Exercise 2: Transaction Row
+
+Create:
+
+- icon
+- title
+- note
+- amount
+- date
+
+### Exercise 3: E-wallet Home Screen
+
+Build:
+
+- header
+- balance card
+- quick actions
+- promotion banner
+- transaction list
+- empty state
+
+---
+
+## Suggested Folder Structure
+
+```text
+Features/
+  Home/
+    HomeView.swift
+    Components/
+      BalanceCardView.swift
+      QuickActionButton.swift
+      TransactionRowView.swift
+
+Shared/
+  DesignSystem/
+    AppSpacing.swift
+    AppRadius.swift
+```
+
+---
+
+## Checklist
+
+The learner should be able to:
+
+- Create SwiftUI views
+- Compose child views
+- Use Stack layout
+- Use modifiers correctly
+- Understand why modifier order matters
+- Build list-like UI
+- Choose between `List` and `LazyVStack`
+- Build reusable components
+
+---
+
+# 7. Week 3 — State, Binding, Form, Data Flow
+
+## Goal
+
+Hiểu cách data di chuyển trong SwiftUI.
+
+Build forms và interactive screens.
+
+---
+
+## Concepts
+
+- `@State`
+- `@Binding`
+- Callback closures
+- `@Observable`
+- `@Environment`
+- `.task`
+- `.onAppear`
+- `.onChange`
+- Form input
+- Validation state
+- Parent-child data flow
+
+---
+
+## React Native ↔ SwiftUI State Mapping
+
+| React Native | SwiftUI |
+|---|---|
+| `useState` | `@State` |
+| `setState` | Direct assignment to state |
+| Props | `let` stored property |
+| Callback prop | Closure property |
+| Controlled component | `@Binding` |
+| Context | `@Environment` |
+| Zustand/Redux store | `@Observable` Store |
+| `useEffect(() => {}, [])` | `.task` / `.onAppear` |
+| `useEffect(..., [value])` | `.onChange(of:)` |
+
+---
+
+## Local State Example
+
+React Native:
+
+```tsx
+const [name, setName] = useState("");
+
+<TextInput value={name} onChangeText={setName} />
+```
+
+SwiftUI:
+
+```swift
+@State private var name = ""
+
+TextField("Name", text: $name)
+```
+
+`$name` passes a Binding.
+
+---
+
+## Parent-Child Binding Example
+
+```swift
+struct ParentView: View {
+    @State private var isOn = false
+
+    var body: some View {
+        ChildView(isOn: $isOn)
+    }
+}
+
+struct ChildView: View {
+    @Binding var isOn: Bool
+
+    var body: some View {
+        Toggle("Enabled", isOn: $isOn)
+    }
+}
+```
+
+---
+
+## Callback Closure Example
+
+```swift
+struct TransactionRowView: View {
+    let transaction: Transaction
+    let onSelect: (Transaction) -> Void
+
+    var body: some View {
+        Button {
+            onSelect(transaction)
+        } label: {
+            Text(transaction.displayNote)
         }
     }
 }
 ```
 
-instead of forcing `List` to behave like a fully custom RN `FlatList`.
+---
+
+## Exercises
+
+### Exercise 1: Add Transaction Form
+
+Fields:
+
+- amount
+- note
+- category
+- date
+- submit button
+
+State:
+
+- local form state
+- validation error
+- submit success
+
+### Exercise 2: Extract Form Components
+
+Create:
+
+- `AmountTextField`
+- `CategoryPicker`
+- `DatePickerRow`
+- `SubmitButton`
+
+### Exercise 3: Parent-Child Binding
+
+Parent owns form state. Child components edit values using `@Binding`.
 
 ---
 
-# 9. Suggested Final Project
+## Checklist
 
-## Mini E-wallet SwiftUI App
+The learner should be able to:
+
+- Use `@State`
+- Use `@Binding`
+- Pass callbacks to child views
+- Build controlled input forms
+- Validate input
+- Use `.task`, `.onAppear`, `.onChange`
+- Avoid side effects inside `body`
+
+---
+
+# 8. Week 4 — Navigation and Architecture
+
+## Goal
+
+Build multi-screen SwiftUI app with clean structure.
+
+---
+
+## Concepts
+
+- `NavigationStack`
+- `NavigationLink`
+- `navigationDestination`
+- Enum route
+- Route parameters
+- `sheet`
+- `fullScreenCover`
+- Feature folder structure
+- Store / ViewModel
+- Service
+- Repository
+- Dependency injection
+
+---
+
+## React Navigation ↔ SwiftUI Navigation Mapping
+
+| React Navigation | SwiftUI |
+|---|---|
+| Stack Navigator | `NavigationStack` |
+| `navigation.navigate("Profile")` | `path.append(.profile)` |
+| Route params | Enum associated value |
+| Modal screen | `sheet` / `fullScreenCover` |
+| Screen component | SwiftUI View |
+| Navigation container | App-level `NavigationStack` |
+
+---
+
+## Enum Route Example
+
+```swift
+enum AppRoute: Hashable {
+    case transactionDetail(id: String)
+    case addTransaction
+    case profile
+}
+```
+
+```swift
+struct AppRouterView: View {
+    @State private var path: [AppRoute] = []
+
+    var body: some View {
+        NavigationStack(path: $path) {
+            HomeView(
+                onOpenTransaction: { id in
+                    path.append(.transactionDetail(id: id))
+                },
+                onAddTransaction: {
+                    path.append(.addTransaction)
+                }
+            )
+            .navigationDestination(for: AppRoute.self) { route in
+                switch route {
+                case .transactionDetail(let id):
+                    TransactionDetailView(id: id)
+                case .addTransaction:
+                    AddTransactionView()
+                case .profile:
+                    ProfileView()
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+## Suggested Architecture
+
+```text
+App/
+  MainApp.swift
+  AppRouterView.swift
+  AppRoute.swift
+
+Features/
+  Home/
+    HomeView.swift
+    HomeStore.swift
+    Components/
+  Transaction/
+    TransactionListView.swift
+    TransactionDetailView.swift
+    TransactionFormView.swift
+    TransactionStore.swift
+
+Shared/
+  Components/
+  DesignSystem/
+  Models/
+  Networking/
+  Persistence/
+  Extensions/
+```
+
+---
+
+## Architecture Mapping
+
+| React Native Architecture | SwiftUI Equivalent |
+|---|---|
+| Screen + hooks + service | View + Store + Service |
+| Zustand store | `@Observable final class Store` |
+| Redux reducer | Store methods / action enum |
+| React Query | Repository + Loadable state |
+| Context Provider | Environment |
+| API client | Service / Repository |
+| Feature folder | Feature folder |
+
+---
+
+## Exercises
+
+### Exercise 1: Build App Routes
+
+Create:
+
+- `AppRoute`
+- `AppRouterView`
+- home route
+- transaction detail route
+- add transaction route
+
+### Exercise 2: Sheet Flow
+
+Create filter sheet:
+
+- category filter
+- date filter
+- apply button
+- clear button
+
+### Exercise 3: Feature Store
+
+Create `TransactionStore`.
+
+Responsibilities:
+
+- load transactions
+- add transaction
+- update transaction
+- delete transaction
+- filter transactions
+
+---
+
+## Checklist
+
+The learner should be able to:
+
+- Use `NavigationStack`
+- Use enum-based routes
+- Pass route params safely
+- Use `sheet`
+- Organize feature folders
+- Separate View from business logic
+- Create basic Store and Service
+
+---
+
+# 9. Week 5 — Networking, Async/Await, Persistence
+
+## Goal
+
+Build app data layer with async APIs and local storage.
+
+---
+
+## Concepts
+
+- `URLSession`
+- `Codable`
+- `async/await`
+- `throws`
+- `do/try/catch`
+- Request model
+- Response model
+- Repository
+- `Loadable` state
+- Retry
+- Cancellation
+- Debounced search
+- UserDefaults
+- File storage
+- SwiftData intro
+
+---
+
+## Networking Mapping
+
+| React Native / TypeScript | Swift |
+|---|---|
+| Fetch / Axios | `URLSession` |
+| TypeScript interface | `Codable struct` |
+| Promise | async function |
+| Promise rejection | thrown error |
+| `try/catch` | `do/try/catch` |
+| AbortController | Task cancellation |
+| React Query state | `Loadable` enum |
+
+---
+
+## Loadable State
+
+```swift
+enum Loadable<Value> {
+    case idle
+    case loading
+    case loaded(Value)
+    case failed(String)
+}
+```
+
+---
+
+## Service Example
+
+```swift
+protocol TransactionService {
+    func fetchTransactions() async throws -> [Transaction]
+}
+```
+
+```swift
+final class RemoteTransactionService: TransactionService {
+    func fetchTransactions() async throws -> [Transaction] {
+        let url = URL(string: "https://example.com/transactions")!
+        let (data, _) = try await URLSession.shared.data(from: url)
+        return try JSONDecoder().decode([Transaction].self, from: data)
+    }
+}
+```
+
+---
+
+## Store Example
+
+```swift
+@Observable
+@MainActor
+final class TransactionStore {
+    var state: Loadable<[Transaction]> = .idle
+
+    private let service: TransactionService
+
+    init(service: TransactionService) {
+        self.service = service
+    }
+
+    func load() async {
+        state = .loading
+
+        do {
+            let transactions = try await service.fetchTransactions()
+            state = .loaded(transactions)
+        } catch {
+            state = .failed(error.localizedDescription)
+        }
+    }
+}
+```
+
+---
+
+## Persistence Mapping
+
+| React Native | Swift |
+|---|---|
+| AsyncStorage | `UserDefaults` / file storage |
+| MMKV | UserDefaults / custom storage / third-party |
+| SQLite | SQLite / GRDB |
+| Realm | Realm Swift |
+| WatermelonDB | SQLite / custom offline architecture |
+| Local DB abstraction | Repository |
+| Offline cache | Repository + local data source |
+
+---
+
+## Exercises
+
+### Exercise 1: Mock API Service
+
+Create async service returning fake transactions after delay.
+
+### Exercise 2: Loadable State
+
+Create screen rendering:
+
+- idle
+- loading
+- loaded
+- empty
+- failed
+
+### Exercise 3: Persistence Layer
+
+Create local repository that saves transactions to local storage.
+
+### Exercise 4: Search App
+
+Build GitHub Repo Search or Movie Search:
+
+- search input
+- debounce
+- result list
+- loading
+- error retry
+- detail screen
+
+---
+
+## Checklist
+
+The learner should be able to:
+
+- Create Codable models
+- Call API with `URLSession`
+- Use async/await
+- Handle errors
+- Model loading state
+- Create repository abstraction
+- Create mock services
+- Persist simple data locally
+- Understand when to use SwiftData vs custom repository
+
+---
+
+# 10. Week 6 — Design System, Testing, Production Readiness
+
+## Goal
+
+Build polished, testable SwiftUI mini app.
+
+---
+
+## Concepts
+
+- Custom components
+- Custom `ViewModifier`
+- Design tokens
+- Button style
+- Text field style
+- Theme
+- Dark mode
+- Dynamic type
+- Accessibility
+- Localization
+- Animation
+- Gestures
+- Unit tests
+- UI tests
+- Instruments
+- Performance debugging
+- CI/CD basics
+
+---
+
+## Design System Mapping
+
+| React Native | SwiftUI |
+|---|---|
+| StyleSheet | View modifiers |
+| Styled components | Custom SwiftUI views |
+| NativeWind / Tailwind | Design tokens + modifiers |
+| Theme provider | Environment / static design system |
+| Reusable component | Reusable View |
+| Button variants | `ButtonStyle` |
+| Text input variants | Custom View / modifier |
+
+---
+
+## Example Design Tokens
+
+```swift
+enum AppSpacing {
+    static let xs: CGFloat = 4
+    static let sm: CGFloat = 8
+    static let md: CGFloat = 16
+    static let lg: CGFloat = 24
+}
+
+enum AppRadius {
+    static let sm: CGFloat = 8
+    static let md: CGFloat = 16
+    static let lg: CGFloat = 24
+}
+```
+
+---
+
+## Custom Card Modifier
+
+```swift
+struct CardModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .padding(AppSpacing.md)
+            .background(.background)
+            .clipShape(RoundedRectangle(cornerRadius: AppRadius.md))
+            .shadow(radius: 4)
+    }
+}
+
+extension View {
+    func appCard() -> some View {
+        modifier(CardModifier())
+    }
+}
+```
+
+Usage:
+
+```swift
+VStack {
+    Text("Balance")
+    Text("1,000,000 VND")
+}
+.appCard()
+```
+
+---
+
+## Accessibility Mapping
+
+| React Native | SwiftUI |
+|---|---|
+| `accessibilityLabel` | `.accessibilityLabel()` |
+| `accessibilityHint` | `.accessibilityHint()` |
+| `accessibilityRole` | native control semantics / traits |
+| Dynamic font scaling | Dynamic Type |
+| Screen reader support | VoiceOver |
+
+---
+
+## Testing Mapping
+
+| React Native | Swift |
+|---|---|
+| Jest | XCTest / Swift Testing |
+| Unit test hook/store | Unit test Store |
+| Mock API | Mock Service / Repository |
+| Detox | XCUITest |
+| Snapshot test | SnapshotTesting library if needed |
+
+---
+
+## Final Project: Mini E-wallet SwiftUI App
 
 ### Screens
 
@@ -1181,41 +1745,218 @@ instead of forcing `List` to behave like a fully custom RN `FlatList`.
 
 ---
 
-# 10. Next Step After Week 1
+# 11. Common Mistakes When Moving from React Native to SwiftUI
 
-After the learner completes Week 1, continue with:
+## Mistake 1: Treating SwiftUI `body` like a side-effect zone
 
-# Week 2: SwiftUI Views and Layout
+Wrong:
 
-Topics:
+```swift
+var body: some View {
+    fetchData()
+    return Text("Hello")
+}
+```
 
-- `struct SomeView: View`
-- `var body: some View`
-- `Text`
-- `Image`
-- `Button`
-- `TextField`
+Better:
+
+```swift
+var body: some View {
+    Text("Hello")
+        .task {
+            await store.load()
+        }
+}
+```
+
+---
+
+## Mistake 2: Forcing Flexbox into SwiftUI
+
+React Native uses Flexbox heavily.
+
+SwiftUI prefers:
+
 - `VStack`
 - `HStack`
 - `ZStack`
 - `Spacer`
-- `.padding`
-- `.background`
-- `.foregroundStyle`
-- `.font`
-- `.frame`
-- `ScrollView`
-- `LazyVStack`
-- `List`
-- `ForEach`
-- `Preview`
+- `frame`
+- `overlay`
+- `background`
+- alignment
 
-Main exercise:
+---
 
-- Build e-wallet home screen with:
-  - Header
-  - Balance card
-  - Quick action buttons
-  - Promotion banner
-  - Transaction list
-  - Empty state
+## Mistake 3: Overusing global stores
+
+In SwiftUI:
+
+- Use `@State` for local view state.
+- Use `@Binding` for parent-child controlled state.
+- Use `@Observable` store for feature state.
+- Use `@Environment` for dependencies or global app context.
+
+Not every state needs to be global.
+
+---
+
+## Mistake 4: Mapping hooks one-to-one
+
+There is no perfect one-to-one mapping for all hooks.
+
+| React Hook | SwiftUI Equivalent |
+|---|---|
+| `useState` | `@State` |
+| `useEffect(() => {}, [])` | `.task` / `.onAppear` |
+| `useEffect(..., [value])` | `.onChange(of:)` |
+| `useMemo` | Computed property / cached state if needed |
+| `useCallback` | Usually unnecessary |
+| Custom hook | Store / service / helper object |
+
+---
+
+## Mistake 5: Customizing `List` too deeply
+
+For highly custom feeds, prefer:
+
+```swift
+ScrollView {
+    LazyVStack {
+        ForEach(items) { item in
+            TransactionRow(item: item)
+        }
+    }
+}
+```
+
+instead of forcing `List` to behave like a fully custom React Native `FlatList`.
+
+---
+
+# 12. Final Roadmap Checklist
+
+## Swift Foundation
+
+- [ ] Understand `let` and `var`
+- [ ] Understand basic types
+- [ ] Write functions
+- [ ] Create structs
+- [ ] Create classes
+- [ ] Understand value type vs reference type
+- [ ] Use Optional
+- [ ] Use `if let`
+- [ ] Use `guard let`
+- [ ] Use arrays
+- [ ] Use dictionaries
+- [ ] Use map/filter/sorted/reduce
+- [ ] Use enums
+- [ ] Use closures
+- [ ] Use protocols
+- [ ] Use extensions
+- [ ] Use generics
+- [ ] Use async/await
+- [ ] Handle errors with `do/try/catch`
+
+## SwiftUI Basics
+
+- [ ] Create `struct SomeView: View`
+- [ ] Use `body`
+- [ ] Use `Text`
+- [ ] Use `Image`
+- [ ] Use `Button`
+- [ ] Use `TextField`
+- [ ] Use `VStack`
+- [ ] Use `HStack`
+- [ ] Use `ZStack`
+- [ ] Use `Spacer`
+- [ ] Use `ScrollView`
+- [ ] Use `LazyVStack`
+- [ ] Use `List`
+- [ ] Use `ForEach`
+- [ ] Use view modifiers
+- [ ] Understand modifier order
+
+## Data Flow
+
+- [ ] Use `@State`
+- [ ] Use `@Binding`
+- [ ] Pass callback closures
+- [ ] Use `@Observable`
+- [ ] Use `@Environment`
+- [ ] Use `.task`
+- [ ] Use `.onAppear`
+- [ ] Use `.onChange`
+- [ ] Build controlled forms
+- [ ] Validate form input
+
+## Navigation
+
+- [ ] Use `NavigationStack`
+- [ ] Use `NavigationLink`
+- [ ] Use `navigationDestination`
+- [ ] Use enum-based routing
+- [ ] Pass route parameters
+- [ ] Use `sheet`
+- [ ] Use `fullScreenCover`
+
+## Architecture
+
+- [ ] Create feature folder structure
+- [ ] Separate View and Store
+- [ ] Create Service layer
+- [ ] Create Repository layer
+- [ ] Use Protocol for abstraction
+- [ ] Use Mock Service
+- [ ] Use `Loadable` state
+- [ ] Use `@MainActor` correctly
+
+## Networking and Persistence
+
+- [ ] Create Codable models
+- [ ] Use `URLSession`
+- [ ] Decode JSON
+- [ ] Handle API errors
+- [ ] Use async service
+- [ ] Use repository
+- [ ] Persist local data
+- [ ] Understand SwiftData basics
+
+## Production
+
+- [ ] Create design tokens
+- [ ] Create reusable components
+- [ ] Create custom modifiers
+- [ ] Support dark mode
+- [ ] Add accessibility labels
+- [ ] Add localization
+- [ ] Write unit tests
+- [ ] Write basic UI tests
+- [ ] Use Instruments
+- [ ] Understand app lifecycle
+- [ ] Understand CI/CD basics
+
+---
+
+# 13. Agent Instruction
+
+When this file is used as context for Claude Code or another AI agent:
+
+- Teach the learner by mapping React Native / TypeScript to Swift / SwiftUI.
+- Assume the learner is senior in React Native.
+- Avoid beginner-level explanations unless they are Swift-specific.
+- Provide practical code examples.
+- Prefer e-wallet / transaction / mobile production examples.
+- When reviewing code, focus on:
+  - Swift syntax
+  - Swift conventions
+  - Correct use of value/reference types
+  - Correct SwiftUI data flow
+  - Avoiding React Native patterns that do not translate well
+  - Production-readiness
+- For every new SwiftUI concept, explain:
+  1. What it is
+  2. React Native equivalent if any
+  3. Key difference
+  4. Small code example
+  5. Exercise
