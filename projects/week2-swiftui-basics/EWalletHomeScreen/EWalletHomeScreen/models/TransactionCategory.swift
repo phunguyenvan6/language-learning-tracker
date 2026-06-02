@@ -16,4 +16,17 @@ extension TransactionCategory {
     var title: String {
         rawValue
     }
+    
+    var systemImage: String {
+        switch self {
+        case .food: 
+            "fork.knife"
+        case .shopping:
+            "bag.fill"
+        case .transport:
+            "car.fill"
+        case .bill:
+            "doc.text.fill"
+        }
+    }
 }

@@ -12,7 +12,7 @@ struct Transaction: Identifiable, Equatable {
     var amount: Double
     var note: String?
     var category: TransactionCategory
-    var createAt: Date
+    var createdAt: Date
 }
 
 extension Transaction {
@@ -22,6 +22,13 @@ extension Transaction {
     
     var displayAmount: String {
         amount.asVND()
+    }
+    
+    var displayDate: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm dd/MM/yyyy"
+        formatter.locale = Locale(identifier: "vi_VN")
+        return formatter.string(from: createdAt)
     }
 }
 

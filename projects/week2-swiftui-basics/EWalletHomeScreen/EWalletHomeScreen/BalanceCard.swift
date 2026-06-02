@@ -19,11 +19,11 @@ struct BalanceCard: View {
                         .foregroundStyle(.white)
                     Spacer()
                     Text("VIB Wallet")
-                        .foregroundStyle(AppColor.textPrimaryWhite)
+                        .foregroundStyle(.white)
                         .font(.caption)
                         .padding(.horizontal, AppSpacing.sm)
                         .padding(.vertical, AppSpacing.xs)
-                        .background(AppColor.brandPrimary.opacity(0.15))
+                        .background(AppColor.brandPrimary.opacity(0.35))
                         .clipShape(Capsule())
                     
                 }
@@ -51,7 +51,7 @@ struct BalanceCard: View {
             }
             Image(systemName: "creditcard.fill")
                 .font(AppTypography.title)
-                .foregroundStyle(AppColor.textPrimaryWhite)
+                .foregroundStyle(.white)
                 .padding(.bottom, AppSpacing.lg)
                 .padding(.trailing, AppSpacing.lg)
         }

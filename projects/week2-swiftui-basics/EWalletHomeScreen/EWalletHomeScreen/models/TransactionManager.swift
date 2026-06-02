@@ -16,7 +16,7 @@ final class TransactionManager {
     }
     
     func add(amount: Double, note: String?, category: TransactionCategory) throws {
-        let transaction = Transaction(id: UUID().uuidString, amount: amount, note: note, category: category, createAt: Date())
+        let transaction = Transaction(id: UUID().uuidString, amount: amount, note: note, category: category, createdAt: Date())
         try validate(transaction)
         
         transactions.append(transaction)
@@ -38,7 +38,7 @@ final class TransactionManager {
     }
     
     func sortByNewest() -> [Transaction] {
-        transactions.sorted { $0.createAt > $1.createAt }
+        transactions.sorted { $0.createdAt > $1.createdAt }
     }
     
     func totalAmount() -> Double {

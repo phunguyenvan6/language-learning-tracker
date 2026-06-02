@@ -8,37 +8,40 @@
 import SwiftUI
 
 struct ContentView: View {
-    var shouldSeedOnAppear: Bool = true
+    var shouldSeedOnAppear: Bool = false
     
     @State private var manager = TransactionManager()
     @State private var listRevision = 0
-
+    @State private var useNativeList = false
+    
     var body: some View {
+        Group {
+            if useNativeList {
+                nativeListLayout
+            } else {
+                scrollLayout
+            }
+        }
+        .background(AppColor.bgPrimary.ignoresSafeArea())
+        .onAppear {
+            guard shouldSeedOnAppear, manager.transactions.isEmpty else { return }
+            seedSampleTransactions()
+            listRevision += 1
+        }
+    }
+    
+    // MARK: - Layouts
+    
+    private var scrollLayout: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: AppSpacing.md)
-            {
-                HeaderView(name: "Phú")
-                BalanceCard(balance: manager.totalAmount())
-                QuickActionsRow()
-                PromotionBannerView(
-                    title: "Hoàn tiền đến 5%", description: "Thanh toán hoá đơn qua VIB Wallet", ctaTitle: "Xem ngay"
-                )
+            VStack(alignment: .leading, spacing: AppSpacing.md) {
+                homeTopContent
                 LazyVStack(alignment: .leading, spacing: AppSpacing.sm, pinnedViews: [.sectionHeaders]) {
-                    Section {
-                        if sortedTransactions.isEmpty {
-                            EmptyTransactionsView {
-                                print("refresh tapped")
-                            }
-                        } else {
-                            ForEach(sortedTransactions) { tx in
-                                TransactionRowView(transaction: tx)
-                            }
-                        }
-                    } header: {
-                        Text("Giao dịch gần đây:")
-                            .padding(.top, AppSpacing.lg)
-                            .padding(.bottom, AppSpacing.xs)
-                            .font(AppTypography.headline)
+                    TransactionListSection(
+                        embedInList: useNativeList,
+                        transactions: sortedTransactions
+                    ) {
+                        onRefresh()
                     }
                 }
                 .id(listRevision)
@@ -47,14 +50,49 @@ struct ContentView: View {
             .padding(.horizontal, AppSpacing.lg)
             .padding(.top, AppSpacing.sm)
         }
-        .background(AppColor.bgPrimary.ignoresSafeArea())
         .scrollIndicators(.hidden)
-        .onAppear {
-            guard shouldSeedOnAppear, manager.transactions.isEmpty else { return }
-            seedSampleTransactions()
-            listRevision += 1
+    }
+    
+    private var nativeListLayout: some View {
+        List {
+            VStack(alignment: .leading, spacing: AppSpacing.md) {
+                homeTopContent
+            }
+            .listRowInsets(EdgeInsets())
+            .listRowSeparator(.hidden)
+            .listRowBackground(Color.clear)
+            .padding(.horizontal, AppSpacing.lg)
+            .padding(.top, AppSpacing.sm)
+            .padding(.bottom, AppSpacing.lg)
+            
+            TransactionListSection(
+                embedInList: useNativeList,
+                transactions: sortedTransactions
+            ) {
+                onRefresh()
+            }
+            .id(listRevision)
+            .padding(.horizontal, AppSpacing.lg)
+        }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .listSectionSeparator(.hidden)
+    }
+    
+    private var homeTopContent: some View {
+        Group {
+            HeaderView(name: "Phú")
+            BalanceCard(balance: manager.totalAmount())
+            QuickActionsRow()
+            PromotionBannerView(
+                title: "Hoàn tiền đến 5%",
+                description: "Thanh toán hoá đơn qua VIB Wallet",
+                ctaTitle: "Xem ngay"
+            )
         }
     }
+    
+    // MARK: - Data
     
     private func seedSampleTransactions() {
         let samples: [(Double, String?, TransactionCategory)] = [
@@ -80,6 +118,13 @@ struct ContentView: View {
     
     private var sortedTransactions: [Transaction] {
         manager.sortByNewest()
+    }
+    
+    private func onRefresh() {
+        guard manager.transactions.isEmpty
+        else { return }
+        seedSampleTransactions()
+        listRevision += 1
     }
 }
 

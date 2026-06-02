@@ -11,17 +11,32 @@ struct TransactionRowView: View {
     let transaction: Transaction
     
     var body: some View {
-        VStack(alignment: .leading) {
-            Text("\(transaction.displayNote) - \(transaction.displayAmount)")
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .font(AppTypography.body)
-                .foregroundStyle(
-                    .linearGradient(
-                        colors: [
-                            AppColor.brandPrimary, AppColor.brandSecondary
-                        ], startPoint: .leading, endPoint: .trailing
-                    )
-                )
+        HStack(alignment: .center) {
+            // Icon
+                Image(systemName: transaction.category.systemImage)
+                    .font(.title3)
+                    .foregroundStyle(AppColor.brandPrimary)
+                    .frame(width: 44, height: 44)
+                    .background(AppColor.bgCard)
+                    .clipShape(RoundedRectangle(cornerRadius: AppRadius.sm))
+                VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                    Text(transaction.category.title)          // title
+                        .font(AppTypography.headline)
+                        .foregroundStyle(AppColor.textPrimary)
+                    Text(transaction.displayNote)             // note
+                        .font(AppTypography.caption)
+                        .foregroundStyle(AppColor.textSecondary)
+                        .lineLimit(1)
+                }
+                Spacer()
+                VStack(alignment: .trailing, spacing: AppSpacing.xs) {
+                    Text(transaction.displayAmount)           // amount
+                        .font(AppTypography.headline)
+                        .foregroundStyle(AppColor.textPrimary)
+                    Text(transaction.displayDate)         // date
+                        .font(AppTypography.caption)
+                        .foregroundStyle(AppColor.textSecondary)
+                }
         }
     }
 }
@@ -33,7 +48,7 @@ struct TransactionRowView: View {
             amount: 1_500_000,
             note: "Đi chợ",
             category: .shopping,
-            createAt: Date()
+            createdAt: Date()
         )
     )
     .padding()
