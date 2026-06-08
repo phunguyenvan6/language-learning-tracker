@@ -7,12 +7,28 @@
 
 import SwiftUI
 
+// MARK: - List vs LazyVStack (trong project này)
+//
+// | | ScrollView + LazyVStack | List (nativeListLayout) |
+// |---|---|---|
+// | RN tương đương | ScrollView + map children | FlatList / SectionList |
+// | Scroll container | ScrollView (một) | List (một) — không lồng List trong ScrollView |
+// | Spacing giữa row | LazyVStack(spacing: AppSpacing.sm) | listRowInsets bottom + .ewalletPlainListRow() |
+// | Header section | Section { } header: { Text } — SwiftUI layout tự do | embedInList: header = row đầu (tránh UIKit section header) |
+// | Padding ngang | .padding(.horizontal) trên VStack | .padding trên List + listRowInsets leading/trailing = 0 |
+// | Separator | Không có (trừ khi tự vẽ) | Mặc định có → .listRowSeparator(.hidden) |
+// | Nền row | bgPrimary từ ScrollView | .listRowBackground(.clear) + scrollContentBackground(.hidden) |
+// | Lazy load | LazyVStack chỉ render row trong viewport | List cũng lazy; UITableView-style recycling |
+// | Khi nào dùng | Home + vài section, UI custom (banner, card) | Swipe actions, edit mode, refreshable, navigation link chuẩn iOS |
+//
+// Toggle: useNativeList = false → scrollLayout | true → nativeListLayout
+
 struct ContentView: View {
     var shouldSeedOnAppear: Bool = false
+    var useNativeList: Bool = false
     
     @State private var manager = TransactionManager()
     @State private var listRevision = 0
-    @State private var useNativeList = false
     
     var body: some View {
         Group {
@@ -31,7 +47,8 @@ struct ContentView: View {
     }
     
     // MARK: - Layouts
-    
+
+    /// ScrollView + LazyVStack: layout giống design tự define (header Text, ForEach row không inset UITableView).
     private var scrollLayout: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: AppSpacing.md) {
@@ -53,6 +70,7 @@ struct ContentView: View {
         .scrollIndicators(.hidden)
     }
     
+    /// List là root scroll: cần .ewalletPlainListRow() + embedInList để section/header/row giống scrollLayout.
     private var nativeListLayout: some View {
         List {
             VStack(alignment: .leading, spacing: AppSpacing.md) {
@@ -129,7 +147,7 @@ struct ContentView: View {
 }
 
 #Preview("Có giao dịch") {
-    ContentView()
+    ContentView(shouldSeedOnAppear: true)
 }
 
 #Preview("Dark") {
@@ -138,4 +156,8 @@ struct ContentView: View {
 
 #Preview("Empty") {
     ContentView(shouldSeedOnAppear: false)
+}
+
+#Preview("Native List") {
+    ContentView(shouldSeedOnAppear: true, useNativeList: true)
 }

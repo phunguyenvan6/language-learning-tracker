@@ -11,7 +11,7 @@ struct TransactionRowView: View {
     let transaction: Transaction
     
     var body: some View {
-        HStack(alignment: .center) {
+        HStack(alignment: .center, spacing: AppSpacing.sm) {
             // Icon
                 Image(systemName: transaction.category.systemImage)
                     .font(.title3)
@@ -33,7 +33,7 @@ struct TransactionRowView: View {
                     Text(transaction.displayAmount)           // amount
                         .font(AppTypography.headline)
                         .foregroundStyle(AppColor.textPrimary)
-                    Text(transaction.displayDate)         // date
+                    Text(transaction.displayRelativeDate)         // date
                         .font(AppTypography.caption)
                         .foregroundStyle(AppColor.textSecondary)
                 }
@@ -48,7 +48,7 @@ struct TransactionRowView: View {
             amount: 1_500_000,
             note: "Đi chợ",
             category: .shopping,
-            createdAt: Date()
+            createdAt: Date().addingTimeInterval(-45 * 60)
         )
     )
     .padding()
