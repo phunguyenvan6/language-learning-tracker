@@ -9,34 +9,39 @@ import SwiftUI
 
 struct TransactionRowView: View {
     let transaction: Transaction
+    let action: (String) -> Void
     
     var body: some View {
-        HStack(alignment: .center, spacing: AppSpacing.sm) {
-            // Icon
-                Image(systemName: transaction.category.systemImage)
-                    .font(.title3)
-                    .foregroundStyle(AppColor.brandPrimary)
-                    .frame(width: 44, height: 44)
-                    .background(AppColor.bgCard)
-                    .clipShape(RoundedRectangle(cornerRadius: AppRadius.sm))
-                VStack(alignment: .leading, spacing: AppSpacing.xs) {
-                    Text(transaction.category.title)          // title
-                        .font(AppTypography.headline)
-                        .foregroundStyle(AppColor.textPrimary)
-                    Text(transaction.displayNote)             // note
-                        .font(AppTypography.caption)
-                        .foregroundStyle(AppColor.textSecondary)
-                        .lineLimit(1)
-                }
-                Spacer()
-                VStack(alignment: .trailing, spacing: AppSpacing.xs) {
-                    Text(transaction.displayAmount)           // amount
-                        .font(AppTypography.headline)
-                        .foregroundStyle(AppColor.textPrimary)
-                    Text(transaction.displayRelativeDate)         // date
-                        .font(AppTypography.caption)
-                        .foregroundStyle(AppColor.textSecondary)
-                }
+        Button {
+            action(transaction.id)
+        } label: {
+            HStack(alignment: .center, spacing: AppSpacing.sm) {
+                // Icon
+                    Image(systemName: transaction.category.systemImage)
+                        .font(.title3)
+                        .foregroundStyle(AppColor.brandPrimary)
+                        .frame(width: 44, height: 44)
+                        .background(AppColor.bgCard)
+                        .clipShape(RoundedRectangle(cornerRadius: AppRadius.sm))
+                    VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                        Text(transaction.category.title)          // title
+                            .font(AppTypography.headline)
+                            .foregroundStyle(AppColor.textPrimary)
+                        Text(transaction.displayNote)             // note
+                            .font(AppTypography.caption)
+                            .foregroundStyle(AppColor.textSecondary)
+                            .lineLimit(1)
+                    }
+                    Spacer()
+                    VStack(alignment: .trailing, spacing: AppSpacing.xs) {
+                        Text(transaction.displayAmount)           // amount
+                            .font(AppTypography.headline)
+                            .foregroundStyle(AppColor.textPrimary)
+                        Text(transaction.displayRelativeDate)         // date
+                            .font(AppTypography.caption)
+                            .foregroundStyle(AppColor.textSecondary)
+                    }
+            }
         }
     }
 }
@@ -50,6 +55,7 @@ struct TransactionRowView: View {
             category: .shopping,
             createdAt: Date().addingTimeInterval(-45 * 60)
         )
-    )
-    .padding()
+    ) { id in
+        print("Tapped:", id)
+    }.padding()
 }

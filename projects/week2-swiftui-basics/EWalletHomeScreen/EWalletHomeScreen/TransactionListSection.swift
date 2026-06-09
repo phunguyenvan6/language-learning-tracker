@@ -18,6 +18,7 @@ struct TransactionListSection: View {
 
     let transactions: [Transaction]
     let onRefresh: () -> Void
+    let onTransactionTap: (String) -> Void
 
     @ViewBuilder
     private var sectionTitle: some View {
@@ -39,7 +40,7 @@ struct TransactionListSection: View {
             .ewalletPlainListRow()
         } else {
           ForEach(transactions) { tx in
-            TransactionRowView(transaction: tx)
+            TransactionRowView(transaction: tx, action: onTransactionTap)
               .ewalletPlainListRow()
           }
         }
@@ -102,8 +103,10 @@ private enum TransactionListSectionPreviewData {
         LazyVStack(alignment: .leading, spacing: AppSpacing.sm, pinnedViews: [.sectionHeaders]) {
             TransactionListSection(
                 embedInList: false,
-                transactions: TransactionListSectionPreviewData.samples
-            ) {}
+                transactions: TransactionListSectionPreviewData.samples,
+                onRefresh: {},
+                onTransactionTap: { _ in }
+            )
         }
         .padding(.horizontal, AppSpacing.lg)
     }
@@ -115,8 +118,10 @@ private enum TransactionListSectionPreviewData {
         LazyVStack(alignment: .leading, spacing: AppSpacing.sm, pinnedViews: [.sectionHeaders]) {
             TransactionListSection(
                 embedInList: false,
-                transactions: []
-            ) {}
+                transactions: [],
+                onRefresh: {},
+                onTransactionTap: { _ in }
+            )
         }
         .padding(.horizontal, AppSpacing.lg)
     }
@@ -127,8 +132,10 @@ private enum TransactionListSectionPreviewData {
     List {
         TransactionListSection(
             embedInList: true,
-            transactions: TransactionListSectionPreviewData.samples
-        ) {}
+            transactions: TransactionListSectionPreviewData.samples,
+            onRefresh: {},
+            onTransactionTap: { _ in }
+        )
     }
     .listStyle(.plain)
     .scrollContentBackground(.hidden)
@@ -141,8 +148,10 @@ private enum TransactionListSectionPreviewData {
     List {
         TransactionListSection(
             embedInList: true,
-            transactions: []
-        ) {}
+            transactions: [],
+            onRefresh: {},
+            onTransactionTap: { _ in }
+        )
     }
     .listStyle(.plain)
     .scrollContentBackground(.hidden)
@@ -156,8 +165,10 @@ private enum TransactionListSectionPreviewData {
         LazyVStack(alignment: .leading, spacing: AppSpacing.sm, pinnedViews: [.sectionHeaders]) {
             TransactionListSection(
                 embedInList: false,
-                transactions: TransactionListSectionPreviewData.samples
-            ) {}
+                transactions: TransactionListSectionPreviewData.samples,
+                onRefresh: {},
+                onTransactionTap: { _ in }
+            )
         }
         .padding(.horizontal, AppSpacing.lg)
     }

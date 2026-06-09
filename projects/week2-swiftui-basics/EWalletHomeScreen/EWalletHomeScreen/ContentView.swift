@@ -28,7 +28,6 @@ struct ContentView: View {
     var useNativeList: Bool = false
     
     @State private var manager = TransactionManager()
-    @State private var listRevision = 0
     
     var body: some View {
         Group {
@@ -42,12 +41,11 @@ struct ContentView: View {
         .onAppear {
             guard shouldSeedOnAppear, manager.transactions.isEmpty else { return }
             seedSampleTransactions()
-            listRevision += 1
         }
     }
     
     // MARK: - Layouts
-
+    
     /// ScrollView + LazyVStack: layout giống design tự define (header Text, ForEach row không inset UITableView).
     private var scrollLayout: some View {
         ScrollView {
@@ -56,12 +54,11 @@ struct ContentView: View {
                 LazyVStack(alignment: .leading, spacing: AppSpacing.sm, pinnedViews: [.sectionHeaders]) {
                     TransactionListSection(
                         embedInList: useNativeList,
-                        transactions: sortedTransactions
-                    ) {
-                        onRefresh()
-                    }
+                        transactions: sortedTransactions,
+                        onRefresh: onRefresh,
+                        onTransactionTap: onTransactionTap
+                    )
                 }
-                .id(listRevision)
             }
             .frame(maxWidth: .infinity, alignment: .topLeading)
             .padding(.horizontal, AppSpacing.lg)
@@ -85,11 +82,10 @@ struct ContentView: View {
             
             TransactionListSection(
                 embedInList: useNativeList,
-                transactions: sortedTransactions
-            ) {
-                onRefresh()
-            }
-            .id(listRevision)
+                transactions: sortedTransactions,
+                onRefresh: onRefresh,
+                onTransactionTap: onTransactionTap
+            )
             .padding(.horizontal, AppSpacing.lg)
         }
         .listStyle(.plain)
@@ -113,18 +109,19 @@ struct ContentView: View {
     // MARK: - Data
     
     private func seedSampleTransactions() {
-        let samples: [(Double, String?, TransactionCategory)] = [
-            (850_000, "Đi chợ", .food),
-            (2_500_000, "Chuyển tiền", .transport),
-            (120_000, nil, .bill),
-            (450_000, "Mua sắm", .shopping),
+        let samples: [(Double, String?, TransactionCategory, Date)] = [
+            (850_000, "Đi chợ", .food, Date().addingTimeInterval(-41000)),
+            (2_500_000, "Chuyển tiền", .transport,  Date().addingTimeInterval(-12000)),
+            (120_000, nil, .bill, Date().addingTimeInterval(-2000)),
+            (450_000, "Mua sắm", .shopping, Date().addingTimeInterval(-1000)),
         ]
         for sample in samples {
             do {
                 try manager.add(
                     amount: sample.0,
                     note: sample.1,
-                    category: sample.2
+                    category: sample.2,
+                    createdAt: sample.3
                 )
             } catch let error as LocalizedError {
                 print(error.errorDescription ?? String(describing: error))
@@ -142,7 +139,11 @@ struct ContentView: View {
         guard manager.transactions.isEmpty
         else { return }
         seedSampleTransactions()
-        listRevision += 1
+    }
+    
+    private func onTransactionTap(id: String) {
+        print("Tapped transaction:", id)
+        manager.delete(id: id)
     }
 }
 
@@ -151,7 +152,7 @@ struct ContentView: View {
 }
 
 #Preview("Dark") {
-    ContentView().preferredColorScheme(.dark)
+    ContentView(shouldSeedOnAppear: true).preferredColorScheme(.dark)
 }
 
 #Preview("Empty") {

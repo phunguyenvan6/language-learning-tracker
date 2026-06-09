@@ -1,6 +1,6 @@
 //
 //  TransactionManager.swift
-//  EWalletHomeScreen
+//  AddTransactionForm
 //
 //  Created by Phu Nguyen Van (BTS-DCT-IDO) on 27/5/26.
 //
@@ -26,15 +26,9 @@ final class TransactionManager {
         
         transactions.append(transaction)
     }
-    
-    func add(amount: Double, note: String?, category: TransactionCategory, createdAt: Date) throws {
-        let transaction = Transaction(
-            id: UUID().uuidString,
-            amount: amount,
-            note: note,
-            category: category,
-            createdAt: createdAt
-        )
+   
+    func add(amount: Double, note: String?, category: TransactionCategory) throws {
+        let transaction = Transaction(id: UUID().uuidString, amount: amount, note: note, category: category, createdAt: Date())
         try validate(transaction)
         
         transactions.append(transaction)
