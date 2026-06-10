@@ -16,5 +16,12 @@ struct CategoryPicker: View {
                 Label(cat.title, systemImage: cat.systemImage).tag(cat)
             }
         }
+        .formField()
     }
+}
+
+#Preview {
+    @Previewable @State var category: TransactionCategory = .shopping
+
+    CategoryPicker(selection: $category)
 }

@@ -48,7 +48,7 @@ enum AppShadow {
         let x: CGFloat
         let y: CGFloat
     }
-
+    
     static let card = Style(
         color: .black.opacity(0.1),
         radius: 10,
@@ -57,8 +57,46 @@ enum AppShadow {
     )
 }
 
+struct FormFieldModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .padding(.horizontal, AppSpacing.lg)
+            .padding(.vertical, AppSpacing.md)
+            .background(AppColor.bgCard, in: .rect(cornerRadius: AppRadius.md))
+            .overlay(
+                RoundedRectangle(cornerRadius: AppRadius.md)
+                    .strokeBorder(AppColor.textSecondary.opacity(0.15), lineWidth: 1)
+            )
+    }
+}
+
+struct PrimaryButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+    
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(AppTypography.headline)
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, AppSpacing.lg)
+            .background(
+                LinearGradient(
+                    colors: [AppColor.brandPrimary, AppColor.brandSecondary], startPoint: .topLeading, endPoint: .bottomTrailing
+                ),
+                in: .rect(cornerRadius: AppRadius.card)
+            )
+            .opacity(isEnabled ? 1 : 0.4)
+            .scaleEffect(configuration.isPressed ? 0.97 : 1)
+            .appShadow(AppShadow.card)
+            .animation(.snappy(duration: 0.15), value: configuration.isPressed)
+    }
+}
+
 extension View {
     func appShadow(_ style: AppShadow.Style) -> some View {
         shadow(color: style.color, radius: style.radius, x: style.x, y: style.y)
+    }
+    func formField() -> some View {
+        modifier(FormFieldModifier())
     }
 }

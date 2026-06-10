@@ -28,7 +28,7 @@ final class TransactionManager {
     }
    
     func add(amount: Double, note: String?, category: TransactionCategory, createdAt: Date) throws {
-        let transaction = Transaction(id: UUID().uuidString, amount: amount, note: note, category: category, createdAt: Date())
+        let transaction = Transaction(id: UUID().uuidString, amount: amount, note: note, category: category, createdAt: createdAt)
         try validate(transaction)
         
         transactions.append(transaction)
@@ -65,5 +65,25 @@ final class TransactionManager {
 func validate(_ transaction: Transaction) throws {
     guard transaction.amount > 0 else {
         throw TransactionError.invalidAmount
+    }
+}
+
+extension TransactionManager {
+    static func previewSeeded() -> TransactionManager {
+        let manager = TransactionManager()
+        let samples: [(Double, String?, TransactionCategory, TimeInterval)] = [
+            (50_000, "Cà phê", .food, -3600),
+            (120_000, "Siêu thị", .shopping, -7200),
+            (35_000, "Grab", .transport, -86400),
+        ]
+        for sample in samples {
+            try? manager.add(
+                amount: sample.0,
+                note: sample.1,
+                category: sample.2,
+                createdAt: Date().addingTimeInterval(sample.3)
+            )
+        }
+        return manager
     }
 }
