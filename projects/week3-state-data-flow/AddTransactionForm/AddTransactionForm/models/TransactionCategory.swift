@@ -5,7 +5,7 @@
 //  Created by Phu Nguyen Van (BTS-DCT-IDO) on 27/5/26.
 //
 
-enum TransactionCategory: String, Equatable {
+enum TransactionCategory: String, Equatable, CaseIterable {
     case food = "Food"
     case shopping = "Shopping"
     case transport = "Transport"

@@ -27,7 +27,7 @@ final class TransactionManager {
         transactions.append(transaction)
     }
    
-    func add(amount: Double, note: String?, category: TransactionCategory) throws {
+    func add(amount: Double, note: String?, category: TransactionCategory, createdAt: Date) throws {
         let transaction = Transaction(id: UUID().uuidString, amount: amount, note: note, category: category, createdAt: Date())
         try validate(transaction)
         
