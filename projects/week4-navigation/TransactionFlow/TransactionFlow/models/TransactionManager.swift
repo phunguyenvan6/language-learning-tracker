@@ -8,7 +8,7 @@
 import Foundation
 import Observation
 
-//Thêm Observable là đủ bởi vì ContentView đã sử dụng State, body tự re-render khi property thay đổi, cho dù không thay đổi reference.
+// @Observable đủ vì TransactionFlowApp giữ @State manager; body tự re-render khi property thay đổi.
 //State là owner sở hữu instance tránh tạo nhiều lần.
 
 @Observable

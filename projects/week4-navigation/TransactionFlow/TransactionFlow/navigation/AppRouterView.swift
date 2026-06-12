@@ -9,7 +9,12 @@ import SwiftUI
 
 struct AppRouterView: View {
     @State private var path: [AppRoute] = []
-    
+    @State private var activeSheet: HomeSheet? = nil
+    @State private var activeCover: AppCover? = nil
+
+    @State private var draftFilter = TransactionFilter.empty
+    @State private var appliedFilter = TransactionFilter.empty
+
     var body: some View {
         NavigationStack(path: $path) {
             HomeView(
@@ -17,20 +22,60 @@ struct AppRouterView: View {
                     path.append(.transactionDetail(id: id))
                 },
                 onAddTransaction: {
-                    path.append(.addTransaction)
-                }
+                    activeSheet = .add
+                },
+                onOpenFilter: {
+                    activeSheet = .filter
+                },
+                onOpenOnboarding: {
+                    activeCover = .onboarding
+                },
+                applyFilter: appliedFilter
             )
             .navigationDestination(for: AppRoute.self) { route in
                 switch route {
-                case .home:
-                    EmptyView()
                 case .transactionDetail(let id):
                     TransactionDetailView(transactionId: id)
-                case .addTransaction:
-                    AddTransactionView()
                 }
-                
             }
         }
+        .sheet(item: $activeSheet) { sheet in
+            switch sheet {
+            case .filter:
+                FilterSheetView(
+                    draft: $draftFilter,
+                    onApply: {
+                        withAnimation(.snappy) {
+                            appliedFilter = draftFilter
+                        }
+                    },
+                    onClear: {
+                        withAnimation(.snappy) {
+                            draftFilter = .empty
+                            appliedFilter = .empty
+                        }
+                    }
+                )
+            case .add:
+                NavigationStack {
+                    AddTransactionView()
+                }
+//            case .edit(id: let id):
+            }
+        }
+        .fullScreenCover(item: $activeCover) { cover in
+            switch cover {
+            case .onboarding:
+                OnboardingView {
+                    activeCover = nil
+                }
+            }
+        }
+        .onChange(of: activeSheet) { _, newValue in
+            if newValue == .filter {
+                draftFilter = appliedFilter
+            }
+        }
+
     }
 }

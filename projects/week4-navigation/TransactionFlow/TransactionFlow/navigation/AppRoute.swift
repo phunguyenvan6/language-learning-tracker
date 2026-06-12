@@ -6,7 +6,5 @@
 //
 
 enum AppRoute: Hashable {
-    case home
     case transactionDetail(id: String)
-    case addTransaction
 }
