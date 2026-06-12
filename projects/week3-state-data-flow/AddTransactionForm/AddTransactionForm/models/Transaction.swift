@@ -21,14 +21,7 @@ extension Transaction {
     }
     
     var displayAmount: String {
-        amount.asVND()
-    }
-    
-    var displayDate: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm dd/MM/yyyy"
-        formatter.locale = Locale(identifier: "vi_VN")
-        return formatter.string(from: createdAt)
+        "\(Self.vndFormatter.string(from: NSNumber(value: amount)) ?? "\(amount)") VND"
     }
     
     private static let relativeDateFormatter: RelativeDateTimeFormatter = {
@@ -39,18 +32,15 @@ extension Transaction {
         return f
     }()
     
+    private static let vndFormatter: NumberFormatter = {
+        let f = NumberFormatter()
+        f.numberStyle = .decimal
+        f.groupingSeparator = ","
+        f.maximumFractionDigits = 0
+        return f
+    }()
+    
     var displayRelativeDate: String {
         Self.relativeDateFormatter.localizedString(for: createdAt, relativeTo: Date())
     }
-}
-
-extension Double {
-    func asVND() -> String {
-            let formatter = NumberFormatter()
-            formatter.numberStyle = .decimal
-            formatter.groupingSeparator = ","
-            formatter.maximumFractionDigits = 0
-            let formatted = formatter.string(from: NSNumber(value: self)) ?? "\(self)"
-            return "\(formatted) VND"
-        }
 }

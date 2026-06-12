@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var manager = TransactionManager()
+    @Environment(TransactionManager.self) private var manager
     @State private var note = ""
     @State private var amountText = ""
     @State private var category: TransactionCategory = .food
@@ -18,6 +18,11 @@ struct ContentView: View {
     @State private var submitting: Bool = false
     @State private var didSubmitSuccessfully = false
     
+    #if DEBUG
+    @State private var didSeedDemo = false
+    #endif
+    
+    
     private var parsedAmount: Double? {
         Double(amountText.trimmingCharacters(in: .whitespaces))
     }
@@ -26,7 +31,7 @@ struct ContentView: View {
         guard let amount = parsedAmount else { return false }
         return amount > 0
     }
-
+    
     private func submit() {
         submitting = true
         defer { submitting = false }
@@ -69,54 +74,76 @@ struct ContentView: View {
         
     }
     
-    init(manager: TransactionManager = TransactionManager()) {
-        _manager = State(initialValue: manager)
+    private var homeTopContent: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.lg) {
+            Text("Thêm giao dịch")
+                .font(AppTypography.title)
+                .foregroundStyle(AppColor.textPrimary)
+            
+            AmountTextField(text: $amountText)
+            TextField("Ghi chú", text: $note).formField()
+            CategoryPicker(selection: $category).pickerStyle(.menu)
+            DatePickerCustom(selection: $createdAt)
+            
+            if let errorMessage {
+                Label(errorMessage, systemImage: "exclamationmark.triangle.fill")
+                    .font(AppTypography.caption)
+                    .foregroundStyle(.red)
+                    .padding(AppSpacing.md)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(.red.opacity(0.1), in: .rect(cornerRadius: AppRadius.sm))
+                    .transition(.opacity.combined(
+                        with: .scale(scale: 0.95, anchor: .top)
+                    ))
+            }
+            Divider().padding(.vertical, AppSpacing.md)
+            
+            Text("Đã lưu: \(manager.transactions.count) giao dịch")
+                .font(AppTypography.caption)
+                .foregroundStyle(AppColor.textSecondary)
+                .contentTransition(
+                    .numericText(value:Double(manager.transactions.count))
+                )
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .padding(.horizontal, AppSpacing.lg)
+        .listRowInsets(EdgeInsets())
+        .listRowSeparator(.hidden)
+        .listRowBackground(
+            Rectangle()
+                .fill(AppColor.bgPrimary)
+        )
+        
+    }
+    
+    private var sortedTransactions: [Transaction] {
+        manager.sortByNewest()
+    }
+    
+    private func onRefresh() {
+        guard manager.transactions.isEmpty
+        else { return }
+        seedSampleTransactions()
+    }
+    
+    private func onTransactionTap(id: String) {
+        print("Tapped transaction:", id)
     }
     
     var body: some View {
-        Group {
-            ScrollView {
-                VStack(alignment: .leading, spacing: AppSpacing.lg) {
-                    Text("Thêm giao dịch")
-                        .font(AppTypography.title)
-                        .foregroundStyle(AppColor.textPrimary)
-                    
-                    AmountTextField(text: $amountText)
-                    TextField("Ghi chú", text: $note).formField()
-                    CategoryPicker(selection: $category).pickerStyle(.menu)
-                    DatePickerCustom(selection: $createdAt)
-                    
-                    if let errorMessage {
-                        Label(errorMessage, systemImage: "exclamationmark.triangle.fill")
-                            .font(AppTypography.caption)
-                            .foregroundStyle(.red)
-                            .padding(AppSpacing.md)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(.red.opacity(0.1), in: .rect(cornerRadius: AppRadius.sm))
-                            .transition(.opacity.combined(
-                                with: .scale(scale: 0.95, anchor: .top)
-                            ))
-                    }
-                    
-                    Text("Đã lưu: \(manager.transactions.count) giao dịch")
-                        .font(AppTypography.caption)
-                        .foregroundStyle(AppColor.textSecondary)
-                        .contentTransition(
-                            .numericText(value:Double(manager.transactions.count))
-                        )
-                }
-                .padding(.horizontal, AppSpacing.lg)
-                .onChange(of: didSubmitSuccessfully) { _, newValue in
-                    guard newValue else { return }
-                    Task {
-                        try await Task.sleep(for: .seconds(2))
-                        withAnimation {
-                            didSubmitSuccessfully = false
-                        }
-                    }
-                }
-
+        VStack(spacing: 0) {
+            List {
+                homeTopContent
+                TransactionListSection(
+                    transactions: sortedTransactions,
+                    onRefresh: onRefresh,
+                    onTransactionTap: onTransactionTap
+                )                
             }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .listSectionSeparator(.hidden)
+            .contentMargins(.horizontal, 0, for: .scrollContent)
             .scrollDismissesKeyboard(.interactively)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .background(AppColor.bgPrimary)
@@ -131,6 +158,43 @@ struct ContentView: View {
                         .appShadow(AppShadow.card)
                     .transition(.move(edge: .top).combined(with: .opacity))                }
             }
+            .task {
+                #if DEBUG
+                guard !didSeedDemo, manager.transactions.isEmpty else { return }
+                didSeedDemo = true
+                try? await Task.sleep(for: .milliseconds(300))
+                try? manager.add(
+                    amount: 25_000,
+                    note: "Demo seed",
+                    category: .food,
+                    createdAt: Date()
+                )
+                #endif // DEBUG
+            }
+            .onAppear {
+                print("ContentView appeared, count:", manager.transactions.count)
+            }
+            .onChange(of: didSubmitSuccessfully) { _, newValue in
+                guard newValue else { return }
+                Task {
+                    try await Task.sleep(for: .seconds(2))
+                    withAnimation {
+                        didSubmitSuccessfully = false
+                    }
+                }
+            }
+            .onChange(of: amountText) { _, _ in
+                if errorMessage != nil {
+                    withAnimation {
+                        errorMessage = nil
+                    }
+                }
+            }
+            .onChange(of: manager.transactions.count) { _, _ in
+                print("Có tất cả \(manager.transactions.count) giao dịch")
+            }
+            .sensoryFeedback(.success, trigger: didSubmitSuccessfully) { _, new in new }
+            
             Button {
                 submit()
             } label: {
@@ -142,18 +206,47 @@ struct ContentView: View {
             .buttonStyle(PrimaryButtonStyle())
             .disabled(!isFormValid || submitting)
         }
-        .sensoryFeedback(.success, trigger: didSubmitSuccessfully) { _, new in new }
     }
     
+    private func seedSampleTransactions() {
+        let samples: [(Double, String?, TransactionCategory, Date)] = [
+            (850_000, "Đi chợ", .food, Date().addingTimeInterval(-41000)),
+            (2_500_000, "Chuyển tiền", .transport,  Date().addingTimeInterval(-12000)),
+            (120_000, nil, .bill, Date().addingTimeInterval(-2000)),
+            (450_000, "Mua sắm", .shopping, Date().addingTimeInterval(-1000)),
+        ]
+        for sample in samples {
+            do {
+                try manager.add(
+                    amount: sample.0,
+                    note: sample.1,
+                    category: sample.2,
+                    createdAt: sample.3
+                )
+            } catch let error as LocalizedError {
+                print(error.errorDescription ?? String(describing: error))
+            } catch {
+                print(error)
+            }
+        }
+    }
 }
 
 #Preview {
-    ContentView()
+    ContentView().environment(TransactionManager.init())
 }
 #Preview("Dark") {
     ContentView()
+        .environment(TransactionManager.init())
         .preferredColorScheme(.dark)
 }
+
 #Preview("Seeded — 3 giao dịch") {
-    ContentView(manager: .previewSeeded())
+    ContentView().environment(TransactionManager.previewSeeded())
+}
+
+#Preview("Seeded Dark — 3 giao dịch") {
+    ContentView()
+        .preferredColorScheme(.dark)
+        .environment(TransactionManager.previewSeeded())
 }

@@ -60,11 +60,11 @@ final class TransactionManager {
     func totalAmount() -> Double {
         transactions.reduce(0) { $0 + $1.amount }
     }
-}
-
-func validate(_ transaction: Transaction) throws {
-    guard transaction.amount > 0 else {
-        throw TransactionError.invalidAmount
+    
+    private func validate(_ transaction: Transaction) throws {
+        guard transaction.amount > 0 else {
+            throw TransactionError.invalidAmount
+        }
     }
 }
 

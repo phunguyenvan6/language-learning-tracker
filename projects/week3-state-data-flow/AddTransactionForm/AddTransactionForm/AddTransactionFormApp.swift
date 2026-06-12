@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct AddTransactionFormApp: App {
+    @State private var manager = TransactionManager()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView().environment(manager)
         }
     }
 }
