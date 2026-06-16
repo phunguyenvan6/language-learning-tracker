@@ -12,45 +12,25 @@ struct HomeView: View {
     let onAddTransaction: () -> Void
     let onOpenFilter: () -> Void
     var onOpenOnboarding: (() -> Void)? = nil
-    let applyFilter: TransactionFilter
     
-    @Environment(TransactionManager.self) private var manager
-    
-    private var displayedTransaction: [Transaction] {
-        var result = manager.sortByNewest()
-        if let category = applyFilter.category {
-            result = result.filter { $0.category == category }
-        }
-        if let from = applyFilter.fromDate {
-            result = result.filter {
-                Calendar.current.startOfDay(for: $0.createdAt) >= Calendar.current.startOfDay(for: from)
-            }
-        }
-        if let to = applyFilter.toDate {
-            result = result.filter {
-                Calendar.current.startOfDay(for: $0.createdAt) <= Calendar.current.startOfDay(for: to)
-            }
-        }
-        return result
-    }
-    
+    @Environment(TransactionStore.self) private var store
 
     var body: some View {
         List {
-            if displayedTransaction.isEmpty {
+            if store.isEmpty {
                 ContentUnavailableView(
                     "Chưa có giao dịch",
                     systemImage: "tray",
                     description: Text("Nhấn + để thêm")
                 )
-            } else if displayedTransaction.isEmpty {
+            } else if store.displayedTransactions.isEmpty {
                 ContentUnavailableView(
                     "Không có kết quả",
                     systemImage: "magnifyingglass",
                     description: Text("Thử xoá bộ lọc")
                 )
             } else {
-                ForEach(displayedTransaction) { tx in
+                ForEach(store.displayedTransactions) { tx in
                     VStack(alignment: .leading) {
                         Button {
                             onOpenTransaction(tx.id)
@@ -66,7 +46,7 @@ struct HomeView: View {
                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                         Button(role: .destructive) {
                             withAnimation {
-                                manager.delete(id: tx.id)
+                                store.delete(id: tx.id)
                             }
                         } label: {
                             Image(systemName: "trash")
@@ -78,7 +58,7 @@ struct HomeView: View {
         .task {
             #if DEBUG
             guard !PreviewRuntime.isRunning else { return }
-            guard manager.transactions.isEmpty else { return }
+            guard store.isEmpty else { return }
             seedSampleTransactions()
             #endif
         }
@@ -88,8 +68,8 @@ struct HomeView: View {
                 Button {
                     onOpenFilter()
                 } label: {
-                    if applyFilter.isActive {
-                        Badge(count: applyFilter.totalFilter)
+                    if store.isFilterActive {
+                        Badge(count: store.appliedFilter.totalFilter)
                     } else {
                         Image(systemName: "line.3.horizontal.decrease.circle")
                     }
@@ -123,7 +103,7 @@ struct HomeView: View {
             ]
             for sample in samples {
                 do {
-                    try manager.add(
+                    try store.add(
                         amount: sample.0,
                         note: sample.1,
                         category: sample.2,
@@ -147,13 +127,12 @@ private enum PreviewRuntime {
 #endif
 
 private struct HomePreviewShell: View {
-    let manager: TransactionManager
+    let store: TransactionStore
 
     @State private var path: [AppRoute] = []
     @State private var activeSheet: HomeSheet? = nil
     @State private var activeCover: AppCover? = nil
     @State private var draftFilter = TransactionFilter.empty
-    @State private var appliedFilter = TransactionFilter.empty
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -167,8 +146,7 @@ private struct HomePreviewShell: View {
                 },
                 onOpenOnboarding: {
                     activeCover = .onboarding
-                },
-                applyFilter: appliedFilter,
+                }
             )
             .navigationDestination(for: AppRoute.self) { route in
                 switch route {
@@ -184,13 +162,13 @@ private struct HomePreviewShell: View {
                     draft: $draftFilter,
                     onApply: {
                         withAnimation(.snappy) {
-                            appliedFilter = draftFilter
+                            store.applyFilter(draftFilter)
                         }
                     },
                     onClear: {
                         withAnimation(.snappy) {
                             draftFilter = .empty
-                            appliedFilter = .empty
+                            store.clearFilter()
                         }
                     }
                 )
@@ -211,27 +189,27 @@ private struct HomePreviewShell: View {
         }
         .onChange(of: activeSheet) { _, newValue in
             if newValue == .filter {
-                draftFilter = appliedFilter
+                draftFilter = store.appliedFilter
             }
         }
-        .environment(manager)
+        .environment(store)
     }
 }
 
 #Preview("Seeded — interactive") {
-    HomePreviewShell(manager: .previewSeeded())
+    HomePreviewShell(store: .previewSeeded())
 }
 
 #Preview("Empty") {
-    HomePreviewShell(manager: TransactionManager())
+    HomePreviewShell(store: TransactionStore(repository: InMemoryTransactionRepository()))
 }
 
 #Preview("Seeded Dark") {
-    HomePreviewShell(manager: .previewSeeded())
+    HomePreviewShell(store: .previewSeeded())
         .preferredColorScheme(.dark)
 }
 
 #Preview("Empty Dark") {
-    HomePreviewShell(manager: TransactionManager())
+    HomePreviewShell(store: TransactionStore(repository: InMemoryTransactionRepository()))
         .preferredColorScheme(.dark)
 }
